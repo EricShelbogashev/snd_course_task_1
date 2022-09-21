@@ -84,12 +84,6 @@ long long LinkedHashSet::getHashPos_(const element *e) const {
     return e->hash() % capacity_;
 }
 
-void LinkedHashSet::swap(LinkedHashSet &other) {
-    LinkedHashSet &tmp = *this;
-    *this = other;
-    other = tmp;
-}
-
 void LinkedHashSet::resize_(int new_capacity) {
     assert(new_capacity > capacity_);
 
@@ -103,6 +97,12 @@ void LinkedHashSet::resize_(int new_capacity) {
 
 // Utils.
 
+void LinkedHashSet::swap(LinkedHashSet &other) {
+    LinkedHashSet &tmp = *this;
+    *this = other;
+    other = tmp;
+}
+
 size_t LinkedHashSet::size() const {
     return this->size_;
 }
@@ -114,7 +114,7 @@ bool LinkedHashSet::empty() const {
 bool LinkedHashSet::contains(const element &e) const {
     long long pos = getHashPos_(&e);
 
-    for (element elem: this->arr_.at(pos)) {
+    for (element elem: arr_.at(pos)) {
         if (elem == e) return true;
     }
     return false;

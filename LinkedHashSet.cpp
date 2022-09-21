@@ -157,6 +157,3 @@ bool LinkedHashSet::operator==(const LinkedHashSet &other) const {
 bool LinkedHashSet::operator!=(const LinkedHashSet &other) const {
     return !operator==(other);
 }
-
-// Iterator.
-

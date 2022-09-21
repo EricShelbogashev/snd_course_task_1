@@ -1,7 +1,3 @@
-//
-// Created by User on 20-Sep-22.
-//
-
 #include "HashUtils.h"
 
 long long HashUtils::stringHash(std::string const &string) {

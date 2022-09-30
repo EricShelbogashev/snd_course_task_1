@@ -5,23 +5,19 @@ using namespace std;
 
 // Constructors.
 
-LinkedHashSet::LinkedHashSet() {
-    this->size_ = 0;
-    this->capacity_ = 64;
+LinkedHashSet::LinkedHashSet() : size_(0), capacity_(16) {
     for (int i = 0; i < capacity_; ++i) {
-        this->arr_.push_back(list<element>());
+        this->arr_.emplace_back(list<element>());
     }
 }
-
-LinkedHashSet::~LinkedHashSet() = default;
 
 LinkedHashSet::LinkedHashSet(const LinkedHashSet &other) {
     this->size_ = other.size_;
     this->capacity_ = other.capacity_;
-
-    // Will there be a memory leak issue here?
     this->arr_ = std::vector<std::list<element>>(other.arr_);
 }
+
+LinkedHashSet::~LinkedHashSet() = default;
 
 // User-accessible interface.
 
@@ -61,7 +57,7 @@ void LinkedHashSet::rehash_(int old_capacity) {
     auto tmp = new vector<list<element>>();
     tmp->reserve(capacity_);
     for (int i = 0; i < capacity_; ++i) {
-        this->arr_.push_back(list<element>());
+        this->arr_.emplace_back(list<element>());
     }
 
     list<element> *curList;
@@ -74,13 +70,10 @@ void LinkedHashSet::rehash_(int old_capacity) {
         }
     }
 
-    // Will there be a memory leak issue here?
-    // Should we do ```delete[] this->arr_``` ?
-    // Does a copy of the vector appear here by pointer?
     this->arr_ = *tmp;
 }
 
-long long LinkedHashSet::getHashPos_(const element *e) const {
+inline long long LinkedHashSet::getHashPos_(const element *e) const {
     return e->hash() % capacity_;
 }
 
@@ -89,7 +82,7 @@ void LinkedHashSet::resize_(int new_capacity) {
 
     if (new_capacity > capacity_) {
         for (int i = this->capacity_; i < new_capacity; ++i) {
-            this->arr_.push_back(list<element>());
+            this->arr_.emplace_back(list<element>());
         }
         this->capacity_ = new_capacity;
     }
@@ -126,7 +119,6 @@ LinkedHashSet &LinkedHashSet::operator=(const LinkedHashSet &other) {
     this->size_ = other.size_;
     this->capacity_ = other.capacity_;
 
-    // Will there be a memory leak issue here?
     this->arr_ = std::vector<std::list<element>>(other.arr_);
     return *this;
 }

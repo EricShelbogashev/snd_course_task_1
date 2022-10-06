@@ -6,6 +6,7 @@
 #include "Types/Student.h"
 
 
+// CR: typedef instead of define
 #define element Student
 
 
@@ -34,11 +35,11 @@ public:
 //    Iterator find(const element &e) const;
 //    Iterator begin();
 //    Iterator end();
-
 private:
     int size_;
     int capacity_;
-    const float occupancy_ = 0.75;
+    const float OCCUPANCY_ = 0.75;
+    // CR: std::list<element> -> std::list<element> *
     std::vector<std::list<element>> arr_;
 
     long long getHashPos_(const element *e) const;

@@ -1,5 +1,5 @@
-#ifndef TASK1_HASHUTILS_H
-#define TASK1_HASHUTILS_H
+#ifndef LINKEDHASHMAP_HASHUTILS_H
+#define LINKEDHASHMAP_HASHUTILS_H
 
 
 #include <string>

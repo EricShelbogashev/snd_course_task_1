@@ -1,5 +1,5 @@
-#ifndef TASK1_STUDENT_H
-#define TASK1_STUDENT_H
+#ifndef LINKEDHASHMAP_STUDENT_H
+#define LINKEDHASHMAP_STUDENT_H
 
 #include <string>
 
@@ -10,7 +10,8 @@ struct Student {
     // New field
     Student(const Student &other);
     bool operator==(const Student & other) const;
-    long long hash() const;
+    bool operator!=(const Student & other) const;
+    size_t hash() const;
     unsigned age_;
     std::string name_;
 };

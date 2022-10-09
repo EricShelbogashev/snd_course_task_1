@@ -1,5 +1,5 @@
-#ifndef TEST11_LINKEDHASHSET_H
-#define TEST11_LINKEDHASHSET_H
+#ifndef LINKEDHASHMAP_LINKEDHASHSET_H
+#define LINKEDHASHMAP_LINKEDHASHSET_H
 
 #include <list>
 #include <vector>

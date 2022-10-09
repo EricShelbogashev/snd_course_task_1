@@ -1,7 +1,6 @@
 /cmake-build-debug/
 build
 .idea
-main.cpp
 *.out
 *.exe
 .vscode

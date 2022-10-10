@@ -2,6 +2,7 @@
 #define LINKEDHASHMAP_HASHUTILS_H
 
 
+#include <iostream>
 #include <string>
 
 class HashUtils {

@@ -3,9 +3,9 @@
 
 int main() {
     LinkedHashSet hashSet;
-    Student student1 = {19, "Eric"};
-    Student student2 = {19, "Lida"};
-    Student student3 = {18, "Lekyshkaa"};
+    Student student1 = {200, "NAME 1"};
+    Student student2 = {2000, "NAME 2"};
+    Student student3 = {20000, "NAME 3"};
     hashSet.insert(student1);
     hashSet.insert(student1);
     hashSet.insert(student2);

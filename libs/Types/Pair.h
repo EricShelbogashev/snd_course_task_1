@@ -7,12 +7,14 @@ template<class T>
 class Pair {
 public:
     explicit Pair(T a, T b);
-    Pair(Pair &other);
+
+    Pair(const Pair<T> &other);
+
     ~Pair() = default;
 
-    T get_first();
+    T get_first() const ;
 
-    T get_second();
+    T get_second() const ;
 
 private:
     T a_;

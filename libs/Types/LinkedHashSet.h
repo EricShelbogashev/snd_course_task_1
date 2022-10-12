@@ -1,18 +1,17 @@
 #ifndef LINKEDHASHMAP_LINKEDHASHSET_H
 #define LINKEDHASHMAP_LINKEDHASHSET_H
 
+#pragma once
+
 #include <list>
 #include <vector>
 #include "Student.h"
 #include "Pair.h"
 
-
 typedef Student element;
 
 class LinkedHashSet {
 public:
-
-//     friend TEST(InsertTest, InsertSameElements);
 
     LinkedHashSet();
     explicit LinkedHashSet(size_t capacity);
@@ -34,7 +33,7 @@ public:
 
     class iterator {
     public:
-        explicit iterator(std::vector<Pair<size_t>>::iterator it, LinkedHashSet & lhs);
+        explicit iterator(std::vector<Pair<size_t>>::iterator it, LinkedHashSet * lhs);
 //        explicit iterator(const std::list<Pair<size_t>>::iterator it, LinkedHashSet & lhs);
         element operator*();
         iterator & operator++();
@@ -45,7 +44,7 @@ public:
     private:
         friend LinkedHashSet;
         std::vector<Pair<size_t>>::iterator hist_iter_;
-        LinkedHashSet &lhs;
+        LinkedHashSet *lhs;
     };
 
     iterator find(const element &e);
@@ -53,6 +52,7 @@ public:
     iterator end();
 
 private:
+    friend class LoadPrivateDataGTest;
 
     static const size_t DEFAULT_CAPACITY_ = 8;
     static constexpr double OCCUPACITY_COEFFICIENT_ = 0.75;
@@ -73,7 +73,5 @@ private:
     void deep_delete_arr_();
     void deep_copy_arr_(const LinkedHashSet &other);
 };
-
-
 
 #endif //TEST11_LINKEDHASHSET_H

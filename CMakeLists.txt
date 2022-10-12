@@ -30,6 +30,9 @@ add_executable(${EXEC_NAME}
 
         libs/Types/Pair.cpp
         libs/Types/Pair.h
+
+        libs/Helpers/LoadPrivateDataGTest.cpp
+        libs/Helpers/LoadPrivateDataGTest.h
         )
 
 # Google test implementation ----------------------------------
@@ -60,6 +63,9 @@ add_executable(LHStest
         libs/Types/Student.cpp
         libs/Types/Pair.cpp
         libs/Types/Pair.h
+
+        libs/Helpers/LoadPrivateDataGTest.cpp
+        libs/Helpers/LoadPrivateDataGTest.h
         )
 
 target_link_libraries(

@@ -36,7 +36,6 @@ public:
     class iterator {
     public:
         explicit iterator(std::list<Pair<size_t>>::iterator it, LinkedHashSet * lhs);
-//        explicit iterator(const std::list<Pair<size_t>>::iterator it, LinkedHashSet & lhs);
         element operator*();
         iterator & operator++();
         iterator operator++(int);

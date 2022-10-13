@@ -40,11 +40,9 @@ LinkedHashSet::LinkedHashSet(const LinkedHashSet &other) : elem_count_(other.ele
 
 LinkedHashSet &LinkedHashSet::operator=(const LinkedHashSet &other) {
     if (this != &other) {
-        this->elem_count_ = other.elem_count_;
-        this->arr_capacity_ = other.arr_capacity_;
-        this->arr_occupancy_ = other.arr_occupancy_;
         deep_delete_arr_();
         deep_copy_arr_(other);
+        history_ = other.history_;
     }
     return *this;
 }
@@ -81,7 +79,7 @@ bool LinkedHashSet::insert(const element &e) {
     }
 
     size_t pos = get_hash_pos_(e);
-    // Будет ли cur_list каждый раз выполнять arr_[pos] или он сохранит результат этой функции?
+    // Will cur_list evaluate arr_[pos] each time or will it store the result of this function?
     std::list<element> *&cur_list = arr_[pos];
     if (cur_list == nullptr) {
         cur_list = new std::list<element>();
@@ -161,6 +159,7 @@ void LinkedHashSet::deep_delete_arr_() {
         }
     }
     delete[] arr_;
+    arr_ = nullptr;
 }
 
 void LinkedHashSet::clear_() {
@@ -213,21 +212,11 @@ void LinkedHashSet::hashmap_resize_(size_t new_capacity) {
 }
 
 void LinkedHashSet::swap(LinkedHashSet &other) {
-    // std::swap() wasn't used.
-    std::list<element> **tmp_arr_ = arr_;
-    size_t tmp_arr_capacity_ = arr_capacity_;
-    size_t tmp_arr_occupancy_ = arr_occupancy_;
-    size_t tmp_elem_count_ = elem_count_;
-
-    arr_ = other.arr_;
-    elem_count_ = other.elem_count_;
-    arr_capacity_ = other.arr_capacity_;
-    arr_occupancy_ = other.arr_occupancy_;
-
-    other.arr_ = tmp_arr_;
-    other.elem_count_ = tmp_elem_count_;
-    other.arr_capacity_ = tmp_arr_capacity_;
-    other.arr_occupancy_ = tmp_arr_occupancy_;
+    std::swap(arr_, other.arr_);
+    std::swap(elem_count_, other.elem_count_);
+    std::swap(arr_capacity_, other.arr_capacity_);
+    std::swap(arr_occupancy_, other.arr_occupancy_);
+    std::swap(history_, other.history_);
 }
 
 size_t LinkedHashSet::size() const {
@@ -291,7 +280,7 @@ LinkedHashSet &LinkedHashSet::clear() {
 
 element LinkedHashSet::iterator::operator*() {
     Pair<size_t> &cur_pos = *hist_iter_;
-    std::list<element> *cur_list = lhs->arr_[cur_pos.get_first()];
+    std::list<element> *&cur_list = lhs->arr_[cur_pos.get_first()];
     auto lit = cur_list->begin();
     std::advance(lit, cur_pos.get_second());
     return *lit;

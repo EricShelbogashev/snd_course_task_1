@@ -35,6 +35,8 @@ add_executable(${EXEC_NAME}
         libs/Helpers/LoadPrivateDataGTest.h
         )
 
+target_compile_options(${EXEC_NAME} PUBLIC -O0)
+
 # Google test implementation ----------------------------------
 
 include(FetchContent)

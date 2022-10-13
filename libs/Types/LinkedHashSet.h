@@ -26,6 +26,8 @@ public:
     size_t size() const;
     bool empty() const;
     bool contains(const element &e) const;
+    // New method; not declared.
+    LinkedHashSet &clear();
 
     LinkedHashSet &operator=(const LinkedHashSet &other);
     bool operator==(const LinkedHashSet &other);
@@ -33,7 +35,7 @@ public:
 
     class iterator {
     public:
-        explicit iterator(std::vector<Pair<size_t>>::iterator it, LinkedHashSet * lhs);
+        explicit iterator(std::list<Pair<size_t>>::iterator it, LinkedHashSet * lhs);
 //        explicit iterator(const std::list<Pair<size_t>>::iterator it, LinkedHashSet & lhs);
         element operator*();
         iterator & operator++();
@@ -43,7 +45,7 @@ public:
         bool operator!=(const iterator &other) const;
     private:
         friend LinkedHashSet;
-        std::vector<Pair<size_t>>::iterator hist_iter_;
+        std::list<Pair<size_t>>::iterator hist_iter_;
         LinkedHashSet *lhs;
     };
 
@@ -62,16 +64,13 @@ private:
     size_t arr_capacity_;
 
     std::list<element> ** arr_;
-    std::vector<Pair<size_t>> history_;
-
+    std::list<Pair<size_t>> history_;
     inline size_t get_hash_pos_(const element &e) const;
 
-    // void rehash_();
-    // void resize_(size_t new_capacity);
     void hashmap_resize_(size_t new_capacity); // with rehash
     void clear_();
     void deep_delete_arr_();
     void deep_copy_arr_(const LinkedHashSet &other);
 };
 
-#endif //TEST11_LINKEDHASHSET_H
+#endif //LINKEDHASHMAP_LINKEDHASHSET_H

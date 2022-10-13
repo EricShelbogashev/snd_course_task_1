@@ -14,7 +14,11 @@ public:
 
     T get_first() const ;
 
-    T get_second() const ;
+    T get_second() const;
+
+    bool operator==(const Pair<T> & other) const;
+
+    bool operator!=(const Pair<T> & other) const;
 
 private:
     T a_;

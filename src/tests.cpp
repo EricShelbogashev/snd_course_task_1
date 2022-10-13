@@ -1,11 +1,9 @@
 #include <gtest/gtest.h>
-#include <iostream>
 #include "../libs/Types/LinkedHashSet.h"
-#include "../libs/Types/Student.h"
 #include "../libs/Helpers/LoadPrivateDataGTest.h"
 
 namespace testingHelpers {
-    Student get_student_by_inx(int inx) {
+    Student get_student_by_inx(size_t inx) {
         return Student(inx, "NAME " + std::to_string(inx));
     }
 }
@@ -40,6 +38,17 @@ TEST(InsertTest, RemoveSameElements) {
     ASSERT_EQ(hashSet.remove(student1), false) << "insert(s1); remove(s1); remove(s1) -> false";
 }
 
+TEST(InsertTest, InsertLargeTest) {
+    LinkedHashSet hashSet2;
+    for (size_t i = 0; i < 100000; i++) {
+        hashSet2.insert(testingHelpers::get_student_by_inx(i));
+        ASSERT_EQ(hashSet2.size(), i + 1);
+    }
+
+//    LinkedHashSet hashSet1(hashSet2);
+    ASSERT_EQ(hashSet2.size(), 100000);
+}
+
 TEST(EqualityTest, InsertSameElements) {
     LinkedHashSet hashSet1;
     LinkedHashSet hashSet2;
@@ -64,3 +73,28 @@ TEST(EqualityTest, InsertSameElements) {
 
     ASSERT_EQ(hashSet1 == hashSet2, true) << "hashSet1 and hashSet2 must be equal";
 }
+
+TEST(CopyConstructorTest, LargeCopy) {
+    LinkedHashSet hashSet;
+    for (size_t i = 0; i < 100000; i++) {
+        hashSet.insert(testingHelpers::get_student_by_inx(i));
+        ASSERT_EQ(hashSet.size(), i + 1);
+    }
+    LinkedHashSet hashSetCopy(hashSet);
+    ASSERT_EQ(hashSet == hashSetCopy, true);
+}
+
+TEST(ClearMethodTest, ClearedAndEmptyEquality) {
+    LinkedHashSet hashSet;
+    for (size_t i = 0; i < 10; i++) {
+        hashSet.insert(testingHelpers::get_student_by_inx(i));
+    }
+
+    for (size_t i = 5; i < 10; i++) {
+        hashSet.remove(testingHelpers::get_student_by_inx(i));
+    }
+    LinkedHashSet hashSetEmpty;
+    hashSet.clear();
+    ASSERT_EQ(hashSet == hashSetEmpty, true);
+}
+

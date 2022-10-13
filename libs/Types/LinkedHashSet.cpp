@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
+#include <limits>
 #include "LinkedHashSet.h"
 #include "Pair.h"
 // Constructors and operators.
@@ -19,10 +20,10 @@ LinkedHashSet::LinkedHashSet(size_t capacity) : elem_count_(0),
 }
 
 LinkedHashSet::~LinkedHashSet() {
-    for (size_t i = 0; i < arr_capacity_ && elem_count_ > 0; i++) {
-        std::list<element> * &cur_list = arr_[i];
+    for (size_t i = 0; i < arr_capacity_ && arr_occupancy_ > 0; i++) {
+        std::list<element> *&cur_list = arr_[i];
         if (cur_list != nullptr) {
-            elem_count_ -= cur_list->size();
+            arr_occupancy_ -= 1;
             delete cur_list;
         }
     }
@@ -55,8 +56,9 @@ bool LinkedHashSet::operator==(const LinkedHashSet &other) {
     if (this->elem_count_ != other.elem_count_)
         return false;
 
-    LinkedHashSet::iterator it = this->begin();
-    while (it != this->end()) {
+    auto it = this->begin();
+    auto itEnd = this->end();
+    while (it != itEnd) {
         if (!other.contains(*it)) {
             return false;
         }
@@ -71,20 +73,16 @@ bool LinkedHashSet::operator!=(const LinkedHashSet &other) {
 }
 
 // User-accessible interface.
-
-/* [] check
-    insert(Student("foo", 1)) -> true
-    insert(Student("foo", 1)) -> false
-    ASSERT_EQ(size(), 1)
-*/
 bool LinkedHashSet::insert(const element &e) {
     if (arr_occupancy_ > arr_capacity_ * OCCUPACITY_COEFFICIENT_) {
-        hashmap_resize_(arr_capacity_ * 2);
+        if (arr_capacity_ * 2 <= UINT32_MAX) {
+            hashmap_resize_(arr_capacity_ * 2);
+        }
     }
 
     size_t pos = get_hash_pos_(e);
     // Будет ли cur_list каждый раз выполнять arr_[pos] или он сохранит результат этой функции?
-    std::list<element> * & cur_list = arr_[pos];
+    std::list<element> *&cur_list = arr_[pos];
     if (cur_list == nullptr) {
         cur_list = new std::list<element>();
         arr_occupancy_++;
@@ -102,11 +100,25 @@ bool LinkedHashSet::insert(const element &e) {
 }
 
 bool LinkedHashSet::remove(const element &e) {
-    std::list<element> *cur_list = arr_[get_hash_pos_(e)];
+    size_t pos = get_hash_pos_(e);
+    std::list<element> *&cur_list = arr_[pos];
 
     if (cur_list == nullptr)
         return false;
-    if (std::find(cur_list->begin(), cur_list->end(), e) != cur_list->end()) {
+
+    auto itList = cur_list->begin();
+    auto itListEnd = cur_list->end();
+    size_t listPos = 0;
+    while (itList != itListEnd) {
+        if (*itList == e) {
+            break;
+        }
+        listPos++;
+        ++itList;
+    }
+
+    if (itList != itListEnd) {
+        history_.remove(Pair<size_t>(pos, listPos));
         cur_list->remove(e);
         elem_count_--;
         return true;
@@ -124,11 +136,12 @@ void LinkedHashSet::deep_copy_arr_(const LinkedHashSet &other) {
 
     size_t i = 0;
     while (arr_occupancy_ > 0) {
-        std::list<element> *list = other.arr_[i];
+        std::list<element> *&list = other.arr_[i];
         if (list != nullptr) {
             arr_[i] = new std::list<element>(*list);
             arr_occupancy_--;
         }
+        i++;
     }
 
 
@@ -141,7 +154,7 @@ void LinkedHashSet::deep_delete_arr_() {
     size_t tmp_arr_occupancy_ = arr_occupancy_;
     size_t i = 0;
     while (tmp_arr_occupancy_ > 0) {
-        std::list<element> * &list = arr_[i++];
+        std::list<element> *&list = arr_[i++];
         if (list != nullptr) {
             tmp_arr_occupancy_--;
             delete list;
@@ -153,7 +166,7 @@ void LinkedHashSet::deep_delete_arr_() {
 void LinkedHashSet::clear_() {
     size_t i = 0;
     while (elem_count_ > 0) {
-        std::list<element> *list = arr_[i];
+        std::list<element> *&list = arr_[i];
 
         if (list != nullptr) {
             elem_count_ -= list->size();
@@ -162,73 +175,21 @@ void LinkedHashSet::clear_() {
 
         i++;
     }
-
-    // Pair to '<=' condition.
-    this->elem_count_ = 0;
+    history_.clear();
 }
 
-/*
-void LinkedHashSet::rehash_() {
-    // std::list<element> * new_arr_ ...
-    auto new_arr_ = new std::list<element> *[arr_capacity_]();
-
-    std::list<element> * cur_list;
-    std::list<element> * new_list;
-
-    size_t tmp_elem_count_ = elem_count_;
-    for (int i = 0; i < arr_capacity_ && tmp_elem_count_ > 0; ++i) {
-        cur_list = arr_[i];
-        if (cur_list != nullptr) {
-            while (!cur_list->empty()) {
-                element & curElem = cur_list->front();
-                cur_list->pop_front();
-                new_list = new_arr_[get_hash_pos_(curElem)];
-                if (new_list == nullptr) {
-                    new_list = new std::list<element>();
-                }
-                new_list.push_back(curElem);
-                tmp_elem_count_++;
-            }
-        }
-    }
-    deep_delete_arr_();
-    arr_ = new_arr_;
-}
-*/
 
 inline size_t LinkedHashSet::get_hash_pos_(const element &e) const {
     return e.hash() % arr_capacity_;
 }
 
 void LinkedHashSet::hashmap_resize_(size_t new_capacity) {
-    // std::list<element> * new_arr_ ...
     arr_capacity_ = new_capacity;
     auto new_arr_ = new std::list<element> *[new_capacity]();
 
-    std::list<element> *cur_list;
-
-    // size_t tmp_elem_count_ = elem_count_;
     size_t tmp_arr_occupancy_ = 0;
-    size_t i = 0;
-/*     while (tmp_elem_count_ > 0) {
-         cur_list = arr_[i];
-         if (cur_list != nullptr) {
-             while (!cur_list->empty()) {
-                 element curElem = cur_list->front();
-                 cur_list->pop_front();
-                 new_list = new_arr_[get_hash_pos_(curElem)];
-                 if (new_list == nullptr) {
-                     new_arr_[get_hash_pos_(curElem)] = new std::list<element>[1]();
-                     tmp_arr_occupancy_++;
-                 }
-                 new_arr_[get_hash_pos_(curElem)]->push_back(curElem);
-                 tmp_elem_count_++;
-             }
-         }
-         i++;
-     }*/
     std::list<element> *new_list;
-    std::vector<Pair<size_t>> history_tmp_;
+    std::list<Pair<size_t>> history_tmp_;
     auto it = this->begin();
     size_t pos;
     auto itEnd = this->end();
@@ -250,23 +211,6 @@ void LinkedHashSet::hashmap_resize_(size_t new_capacity) {
     arr_occupancy_ = tmp_arr_occupancy_;
     arr_ = new_arr_;
 }
-
-
-/*
-// old code; necessary to rewrite.
-void LinkedHashSet::resize_(size_t new_capacity) {
-    assert(new_capacity > capacity_);
-
-    if (new_capacity > capacity_) {
-        for (int i = this->capacity_; i < new_capacity; ++i) {
-            this->arr_.emplace_back(list<element>());
-        }
-        this->capacity_ = new_capacity;
-    }
-}
-*/
-
-// Utils.
 
 void LinkedHashSet::swap(LinkedHashSet &other) {
     // std::swap() wasn't used.
@@ -304,8 +248,7 @@ bool LinkedHashSet::contains(const element &e) const {
 }
 
 // ---------------------------------------------------------------------------------
-LinkedHashSet::iterator::iterator(std::vector<Pair<size_t>>::iterator it, LinkedHashSet *p) : hist_iter_(it), lhs(p) {}
-//LinkedHashSet::iterator::iterator(const std::list<Pair<size_t>>::iterator it, LinkedHashSet &p) : hist_iter_(it), lhs(p) {}
+LinkedHashSet::iterator::iterator(std::list<Pair<size_t>>::iterator it, LinkedHashSet *p) : hist_iter_(it), lhs(p) {}
 
 LinkedHashSet::iterator LinkedHashSet::find(const element &e) {
     size_t pos_a = this->get_hash_pos_(e);
@@ -341,6 +284,11 @@ LinkedHashSet::iterator LinkedHashSet::end() {
     return LinkedHashSet::iterator(history_.end(), this);
 }
 
+LinkedHashSet &LinkedHashSet::clear() {
+    clear_();
+    return *this;
+}
+
 element LinkedHashSet::iterator::operator*() {
     Pair<size_t> &cur_pos = *hist_iter_;
     std::list<element> *cur_list = lhs->arr_[cur_pos.get_first()];
@@ -372,7 +320,3 @@ bool LinkedHashSet::iterator::operator==(const LinkedHashSet::iterator &other) c
 bool LinkedHashSet::iterator::operator!=(const LinkedHashSet::iterator &other) const {
     return !operator==(other);
 }
-
-// ---------------------------------------------------------------------------------
-
-

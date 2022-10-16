@@ -33,7 +33,7 @@ add_executable(${EXEC_NAME}
 
         libs/Helpers/LoadPrivateDataGTest.cpp
         libs/Helpers/LoadPrivateDataGTest.h
-        )
+        libs/Types/Entry.cpp libs/Types/Entry.h)
 
 target_compile_options(${EXEC_NAME} PUBLIC -O0)
 
@@ -68,7 +68,7 @@ add_executable(LHStest
 
         libs/Helpers/LoadPrivateDataGTest.cpp
         libs/Helpers/LoadPrivateDataGTest.h
-        )
+        libs/Types/Entry.cpp libs/Types/Entry.h)
 
 target_link_libraries(
         LHStest

@@ -6,7 +6,7 @@
 #include <list>
 #include <vector>
 #include "Student.h"
-#include "Pair.h"
+#include "Entry.h"
 
 typedef Student element;
 
@@ -35,7 +35,7 @@ public:
 
     class iterator {
     public:
-        explicit iterator(std::list<Pair<size_t>>::iterator it, LinkedHashSet * lhs);
+        explicit iterator(std::list<element *>::iterator it, LinkedHashSet * lhs);
         element operator*();
         iterator & operator++();
         iterator operator++(int);
@@ -44,7 +44,7 @@ public:
         bool operator!=(const iterator &other) const;
     private:
         friend LinkedHashSet;
-        std::list<Pair<size_t>>::iterator hist_iter_;
+        std::list<element *>::iterator hist_iter_;
         LinkedHashSet *lhs;
     };
 
@@ -62,12 +62,14 @@ private:
     size_t arr_occupancy_; // The count of baskets.
     size_t arr_capacity_;
 
-    std::list<element> ** arr_;
-    std::list<Pair<size_t>> history_;
+    std::list<Entry<element>> ** arr_;
+    std::list<element *> history_;
     inline size_t get_hash_pos_(const element &e) const;
 
     void hashmap_resize_(size_t new_capacity); // with rehash
     void clear_();
+    Entry<element> *list_find_(std::list<Entry<element>> *list, const element &e) const;
+    Entry<element> *arr_find_(const element &e) const;
     void deep_delete_arr_();
     void deep_copy_arr_(const LinkedHashSet &other);
 };

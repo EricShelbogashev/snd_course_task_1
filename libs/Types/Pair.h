@@ -17,15 +17,16 @@ public:
 
     V get_second() const;
 
-    bool operator==(const Pair<K> & other) const;
+    bool operator==(const Pair<K, V> & other) const;
 
-    bool operator!=(const Pair<V> & other) const;
+    bool operator!=(const Pair<K, V> & other) const;
 
 private:
     K a_;
     V b_;
 };
 
-template class Pair<size_t, Student>;
+
+template class Pair<size_t, Student &>;
 
 #endif //LINKEDHASHSET_PAIR_H

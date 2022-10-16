@@ -10,12 +10,14 @@ LinkedHashSet::LinkedHashSet() : elem_count_(0),
                                  arr_capacity_(DEFAULT_CAPACITY_) {
 
     arr_ = new std::list<Entry<element>> *[arr_capacity_]();
+    history_ = new std::list<element *>();
 }
 
 LinkedHashSet::LinkedHashSet(size_t capacity) : elem_count_(0),
                                                 arr_occupancy_(0),
                                                 arr_capacity_(capacity) {
     arr_ = new std::list<Entry<element>> *[arr_capacity_]();
+    history_ = new std::list<element *>();
 }
 
 LinkedHashSet::~LinkedHashSet() {
@@ -89,10 +91,28 @@ bool LinkedHashSet::insert(const element &e) {
     if (list_find_(cur_list, e) != nullptr) {
         return false;
     } else {
-        history_.push_back(nullptr);
-        cur_list->push_back(Entry<element>((--history_.end()), e));
-        history_.back() = &(cur_list->back().value);
+        history_->push_back(nullptr);
+
+        auto it = --(history_->end());
+        Entry<element> entry = Entry<element>(it, e);
+
+        cur_list->push_back(entry);
+        element *pointer1 = &(cur_list->back().value);
+
+        history_->back() = pointer1;
+
         elem_count_++;
+
+        std::cout << e.age_ << " " << e.name_ << "| " << elem_count_ << std::endl;
+        std::cout << "Адрес элемента: " << pointer1 << std::endl;
+        std::cout << "Адрес элемента в истории: " << history_->back() << std::endl;
+        std::cout << "Значение итератора: " << (**it).name_ << std::endl;
+
+        for (auto e: *history_) {
+            std::cout << e->name_ << " ";
+        }
+        std::cout << std::endl << std::endl;
+
         return true;
     }
 }
@@ -108,7 +128,7 @@ bool LinkedHashSet::remove(const element &e) {
     if (res == nullptr) {
         return false;
     } else {
-        history_.erase(res->iterator);
+        history_->erase(res->iterator);
         cur_list->remove(*res);
         elem_count_--;
         return true;
@@ -159,7 +179,7 @@ void LinkedHashSet::clear_() {
         std::list<Entry<element>> *&list = arr_[i];
         delete list;
     }
-    history_.clear();
+    history_->clear();
 }
 
 
@@ -170,24 +190,27 @@ inline size_t LinkedHashSet::get_hash_pos_(const element &e) const {
 void LinkedHashSet::hashmap_resize_(size_t new_capacity) {
     arr_capacity_ = new_capacity;
     std::list<Entry<element>> ** new_arr_ = new std::list<Entry<element>> *[new_capacity]();
+    std::list<element *> *new_history_ = new std::list<element *>();
 
     size_t tmp_arr_occupancy_ = 0;
     for (auto e: *this) {
         size_t pos = get_hash_pos_(e);
-        // Will cur_list evaluate arr_[pos] each time or will it store the result of this function?
-        std::list<Entry<element>> *&cur_list = new_arr_[pos];
-        if (cur_list == nullptr) {
-            cur_list = new std::list<Entry<element>>();
-            arr_occupancy_++;
+        // Will new_list evaluate arr_[pos] each time or will it store the result of this function?
+        std::list<Entry<element>> *&new_list = new_arr_[pos];
+        if (new_list == nullptr) {
+            new_list = new std::list<Entry<element>>();
+            tmp_arr_occupancy_++;
         }
 
-        history_.push_back(nullptr);
-        cur_list->push_back(Entry<element>((--history_.end()), e));
-        history_.back() = &(cur_list->back().value);
-        elem_count_++;
+        new_history_->push_back(nullptr);
+        new_list->push_back(Entry<element>((--(history_->end())), e));
+        new_history_->back() = &(new_list->back().value);
     }
+
     deep_delete_arr_();
     arr_ = new_arr_;
+    delete history_;
+    history_ = new_history_;
     arr_occupancy_ = tmp_arr_occupancy_;
 }
 
@@ -232,18 +255,18 @@ LinkedHashSet::iterator LinkedHashSet::find(const element &e) {
     if (hist_iter != nullptr) {
         return LinkedHashSet::iterator(hist_iter->iterator, this);
     } else {
-        return LinkedHashSet::iterator(history_.end(), this);
+        return LinkedHashSet::iterator(history_->end(), this);
     }
 }
 
 
 inline LinkedHashSet::iterator LinkedHashSet::begin() {
-    return LinkedHashSet::iterator(history_.begin(), this);
+    return LinkedHashSet::iterator(history_->begin(), this);
 }
 
 
 inline LinkedHashSet::iterator LinkedHashSet::end() {
-    return LinkedHashSet::iterator(history_.end(), this);
+    return LinkedHashSet::iterator(history_->end(), this);
 }
 
 LinkedHashSet &LinkedHashSet::clear() {

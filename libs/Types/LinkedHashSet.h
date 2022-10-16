@@ -63,7 +63,7 @@ private:
     size_t arr_capacity_;
 
     std::list<Entry<element>> ** arr_;
-    std::list<element *> history_;
+    std::list<element *> *history_;
     inline size_t get_hash_pos_(const element &e) const;
 
     void hashmap_resize_(size_t new_capacity); // with rehash

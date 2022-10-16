@@ -97,19 +97,20 @@ bool LinkedHashSet::insert(const element &e) {
         Entry<element> entry = Entry<element>(it, e);
 
         cur_list->push_back(entry);
-        element *pointer1 = &(cur_list->back().value);
+        element *pointer1 = std::addressof((cur_list->back().value));
 
         history_->back() = pointer1;
 
         elem_count_++;
 
-        std::cout << e.age_ << " " << e.name_ << "| " << elem_count_ << std::endl;
+        std::cout << "Элемент: "<< e.age_ << " " << e.name_ << "| " << elem_count_ << std::endl;
         std::cout << "Адрес элемента: " << pointer1 << std::endl;
         std::cout << "Адрес элемента в истории: " << history_->back() << std::endl;
         std::cout << "Значение итератора: " << (**it).name_ << std::endl;
+        std::cout << "Значение хеша: " << pos << std::endl;
 
         for (auto e: *history_) {
-            std::cout << e->name_ << " ";
+            std::cout << e->name_ << "[ " << e << " ] \n";
         }
         std::cout << std::endl << std::endl;
 

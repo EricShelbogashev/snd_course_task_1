@@ -8,8 +8,8 @@
 
 class LoadPrivateDataGTest {
 public:
-    static size_t get_arr_occupancy(LinkedHashSet &lhs);
-    static size_t get_arr_capacity(LinkedHashSet &lhs);
+    static size_t get_arr_occupancy(LinkedHashSet<Student> &lhs);
+    static size_t get_arr_capacity(LinkedHashSet<Student> &lhs);
 };
 
 

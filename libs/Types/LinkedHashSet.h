@@ -6,66 +6,69 @@
 #include <list>
 #include <vector>
 #include "Student.h"
+#include "Pair.h"
 
-typedef Student element;
-
+template<class T>
 class LinkedHashSet {
 public:
 
     LinkedHashSet();
+
     explicit LinkedHashSet(size_t capacity);
 
     ~LinkedHashSet();
+
     LinkedHashSet(const LinkedHashSet &other);
 
-    bool insert(const element &e);
-    bool remove(const element &e);
+    bool insert(const T &e);
+
+    bool remove(const T &e);
 
     void swap(LinkedHashSet &other);
+
     size_t size() const;
+
     bool empty() const;
-    bool contains(const element &e) const;
+
+    bool contains(const T &e) const;
+
     // New method; not declared.
     LinkedHashSet &clear();
 
     LinkedHashSet &operator=(const LinkedHashSet &other);
+
     bool operator==(const LinkedHashSet &other);
+
     bool operator!=(const LinkedHashSet &other);
 
-    /*class iterator {
-    public:
-        explicit iterator(std::list<element>::iterator it, LinkedHashSet * lhs);
-        element operator*();
-        iterator & operator++();
-        iterator operator++(int);
-        iterator & operator--();
-        bool operator==(const iterator &other) const;
-        bool operator!=(const iterator &other) const;
-    private:
-        friend LinkedHashSet;
-        std::list<element *>::iterator hist_iter_;
-        LinkedHashSet *lhs;
-    };*/
+    typename std::list<T>::iterator find(const T &e);
 
-    std::list<element>::iterator find(const element &e);
-    std::list<element>::iterator begin();
-    std::list<element>::iterator end();
+    typename std::list<T>::iterator begin();
+
+    typename std::list<T>::iterator end();
 
 private:
     friend class LoadPrivateDataGTest;
-    template<class T> class Entry {
+
+    template<class K>
+    class Entry {
     public:
-        explicit Entry(T &value, typename std::list<T>::iterator iterator);
-        Entry(const Entry<T> &other);
+        explicit Entry(K &value, typename std::list<K>::iterator iterator);
+
+        Entry(const Entry<K> &other);
+
         ~Entry() = default;
-        bool operator==(const Entry<T> & other) const;
-        bool operator!=(const Entry<T> & other) const;
+
+        bool operator==(const Entry<K> &other) const;
+
+        bool operator!=(const Entry<K> &other) const;
 
     private:
         friend LinkedHashSet;
-        typename std::list<T>::iterator iterator_;
-        T &value_;
+        typename std::list<K>::iterator iterator_;
+        K &value_;
     };
+
     static const size_t DEFAULT_CAPACITY_ = 8;
     static constexpr double OCCUPACITY_COEFFICIENT_ = 0.75;
 
@@ -73,18 +76,23 @@ private:
     size_t arr_occupancy_; // The count of baskets.
     size_t arr_capacity_;
 
-    std::list<Entry<element>> ** arr_;
-    std::list<element> *history_;
-    inline size_t get_hash_pos_(const element &e) const;
+    std::list<Entry<T>> **arr_;
+    std::list<T> *history_;
+
+    inline size_t get_hash_pos_(const T &e) const;
 
     void hashset_resize_(size_t new_capacity); // with rehash
     void clear_();
-    std::list<Entry<element>>::iterator list_find_(std::list<Entry<element>> &list, const element &e);
-    std::list<Entry<element>>::iterator arr_find_(const element &e);
+
+    typename std::list<Entry<T>>::iterator list_find_(std::list<Entry<T>> &list, const T &e);
+
+    typename std::list<Entry<T>>::iterator arr_find_(const T &e);
+
     void deep_delete_arr_();
+
     void deep_copy_arr_(const LinkedHashSet &other);
 };
 
-
+template class LinkedHashSet<Student>;
 
 #endif //LINKEDHASHMAP_LINKEDHASHSET_H

@@ -3,6 +3,9 @@
 #include <iostream>
 #include "LinkedHashSet.h"
 
+template class LinkedHashSet<Path>;
+template class LinkedHashSet<Student>;
+
 template<class T>
 LinkedHashSet<T>::LinkedHashSet() : elem_count_(0),
                                     arr_occupancy_(0),

@@ -91,7 +91,5 @@ private:
     void deep_copy_arr_(const LinkedHashSet &other);
 };
 
-template class LinkedHashSet<Path>;
-template class LinkedHashSet<Student>;
 
 #endif //LINKEDHASHMAP_LINKEDHASHSET_H

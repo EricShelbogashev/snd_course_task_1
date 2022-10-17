@@ -3,7 +3,7 @@
 
 #include <string>
 
-struct Path {
+class Path {
 public:
     Path(std::string path);
     Path(const Path &other);

@@ -8,6 +8,5 @@
 namespace hash {
     size_t stringHash(std::string const &string);
 }
-// CR: namespace
 
 #endif

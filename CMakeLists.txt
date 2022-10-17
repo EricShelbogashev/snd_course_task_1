@@ -28,6 +28,9 @@ add_executable(${EXEC_NAME}
         libs/Types/Student.h
         libs/Types/Student.cpp
 
+        libs/Types/Path.h
+        libs/Types/Path.cpp
+
         libs/Helpers/LoadPrivateDataGTest.cpp
         libs/Helpers/LoadPrivateDataGTest.h
         )
@@ -60,6 +63,9 @@ add_executable(LHStest
         libs/Types/LinkedHashSet.cpp
         libs/Types/Student.h
         libs/Types/Student.cpp
+
+        libs/Types/Path.h
+        libs/Types/Path.cpp
 
         libs/Helpers/LoadPrivateDataGTest.cpp
         libs/Helpers/LoadPrivateDataGTest.h libs/Types/Path.cpp libs/Types/Path.h)

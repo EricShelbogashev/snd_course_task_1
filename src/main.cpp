@@ -1,6 +1,4 @@
 #include <iostream>
-#include "../libs/Types/Path.h"
-#include "../libs/Types/Student.h"
 #include "../libs/Types/LinkedHashSet.h"
 
 int main() {

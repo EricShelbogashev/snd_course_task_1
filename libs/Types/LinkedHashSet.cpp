@@ -10,14 +10,14 @@ LinkedHashSet::LinkedHashSet() : elem_count_(0),
                                  arr_capacity_(DEFAULT_CAPACITY_) {
 
     arr_ = new std::list<Entry<element>> *[arr_capacity_]();
-    history_ = new std::list<element *>();
+    history_ = new std::list<element>();
 }
 
 LinkedHashSet::LinkedHashSet(size_t capacity) : elem_count_(0),
                                                 arr_occupancy_(0),
                                                 arr_capacity_(capacity) {
     arr_ = new std::list<Entry<element>> *[arr_capacity_]();
-    history_ = new std::list<element *>();
+    history_ = new std::list<element>();
 }
 
 LinkedHashSet::~LinkedHashSet() {
@@ -88,20 +88,17 @@ bool LinkedHashSet::insert(const element &e) {
     }
 
     // Existence check.
-    if (list_find_(cur_list, e) != nullptr) {
+    if (list_find_(*cur_list, e) == cur_list->end()) {
         return false;
     } else {
-        history_->push_back(nullptr);
+        history_->emplace_back(e);
 
-        auto it = --(history_->end());
-        Entry<element> entry = Entry<element>(it, e);
-
-        cur_list->push_back(entry);
-        element *pointer1 = std::addressof((cur_list->back().value));
-
-        history_->back() = pointer1;
+        auto it = history_->insert(history_->end(), e);
+        cur_list->emplace_back(Entry<element>(*it, it));
 
         elem_count_++;
+        return true;
+/*
 
         std::cout << "Элемент: "<< e.age_ << " " << e.name_ << "| " << elem_count_ << std::endl;
         std::cout << "Адрес элемента: " << pointer1 << std::endl;
@@ -113,8 +110,8 @@ bool LinkedHashSet::insert(const element &e) {
             std::cout << e->name_ << "[ " << e << " ] \n";
         }
         std::cout << std::endl << std::endl;
+*/
 
-        return true;
     }
 }
 
@@ -125,12 +122,12 @@ bool LinkedHashSet::remove(const element &e) {
     if (cur_list == nullptr)
         return false;
 
-    Entry<element> *res = list_find_(cur_list, e);
-    if (res == nullptr) {
+    auto curEntryIter = list_find_(*cur_list, e);
+    if (curEntryIter == cur_list->end()) {
         return false;
     } else {
-        history_->erase(res->iterator);
-        cur_list->remove(*res);
+        history_->erase(curEntryIter->iterator_);
+        cur_list->erase(curEntryIter);
         elem_count_--;
         return true;
     }
@@ -190,12 +187,13 @@ inline size_t LinkedHashSet::get_hash_pos_(const element &e) const {
 
 void LinkedHashSet::hashmap_resize_(size_t new_capacity) {
     arr_capacity_ = new_capacity;
-    std::list<Entry<element>> ** new_arr_ = new std::list<Entry<element>> *[new_capacity]();
-    std::list<element *> *new_history_ = new std::list<element *>();
+    std::list<Entry<element>> **new_arr_ = new std::list<Entry<element>> *[new_capacity]();
 
     size_t tmp_arr_occupancy_ = 0;
-    for (auto e: *this) {
-        size_t pos = get_hash_pos_(e);
+    auto it = this->begin();
+    auto itEnd = this->end();
+    while (it != itEnd) {
+        size_t pos = get_hash_pos_(*it);
         // Will new_list evaluate arr_[pos] each time or will it store the result of this function?
         std::list<Entry<element>> *&new_list = new_arr_[pos];
         if (new_list == nullptr) {
@@ -203,15 +201,11 @@ void LinkedHashSet::hashmap_resize_(size_t new_capacity) {
             tmp_arr_occupancy_++;
         }
 
-        new_history_->push_back(nullptr);
-        new_list->push_back(Entry<element>((--(history_->end())), e));
-        new_history_->back() = &(new_list->back().value);
+        new_list->emplace_back(Entry<element>(*it, it));
     }
 
     deep_delete_arr_();
     arr_ = new_arr_;
-    delete history_;
-    history_ = new_history_;
     arr_occupancy_ = tmp_arr_occupancy_;
 }
 
@@ -233,12 +227,12 @@ bool LinkedHashSet::empty() const {
 
 bool LinkedHashSet::contains(const element &e) const {
     // CR: find
-    std::list<Entry<element>> *list = arr_[get_hash_pos_(e)];
+    std::list<Entry<element>> *&list = arr_[get_hash_pos_(e)];
     if (list != nullptr) {
         auto it = list->begin();
         auto itEnd = list->end();
         while (it != itEnd) {
-            if ((*it).value == e) {
+            if ((*it).value_ == e) {
                 return true;
             }
             ++it;
@@ -249,25 +243,14 @@ bool LinkedHashSet::contains(const element &e) const {
 }
 
 // ---------------------------------------------------------------------------------
-LinkedHashSet::iterator::iterator(std::list<element *>::iterator it, LinkedHashSet *p) : hist_iter_(it), lhs(p) {}
 
-LinkedHashSet::iterator LinkedHashSet::find(const element &e) {
-    Entry<element> *hist_iter = (arr_find_(e));
-    if (hist_iter != nullptr) {
-        return LinkedHashSet::iterator(hist_iter->iterator, this);
-    } else {
-        return LinkedHashSet::iterator(history_->end(), this);
-    }
+inline std::list<element>::iterator LinkedHashSet::begin() {
+    return history_->begin();
 }
 
 
-inline LinkedHashSet::iterator LinkedHashSet::begin() {
-    return LinkedHashSet::iterator(history_->begin(), this);
-}
-
-
-inline LinkedHashSet::iterator LinkedHashSet::end() {
-    return LinkedHashSet::iterator(history_->end(), this);
+inline std::list<element>::iterator LinkedHashSet::end() {
+    return history_->end();
 }
 
 LinkedHashSet &LinkedHashSet::clear() {
@@ -275,53 +258,43 @@ LinkedHashSet &LinkedHashSet::clear() {
     return *this;
 }
 
-Entry<element> *LinkedHashSet::list_find_(std::list<Entry<element>> *list, const element &e) const {
-    auto it = list->begin();
-    auto itEnd = list->end();
+std::list<LinkedHashSet::Entry<element>>::iterator
+LinkedHashSet::list_find_(std::list<LinkedHashSet::Entry<element>> &list, const element &e) {
+    auto it = list.begin();
+    auto itEnd = list.end();
     while (it != itEnd) {
-        if ((*it).value == e) {
-            return &(*it);
+        if ((*it).value_ == e) {
+            return it;
         }
         ++it;
     }
-    return nullptr;
+    return itEnd;
 }
 
-Entry<element> *LinkedHashSet::arr_find_(const element &e) const {
+std::list<LinkedHashSet::Entry<element>>::iterator
+LinkedHashSet::arr_find_(const element &e) {
     size_t pos = get_hash_pos_(e);
     std::list<Entry<element>> *&list = arr_[pos];
     if (list == nullptr) {
-        return nullptr;
+        return list->end();
     }
-    return list_find_(list, e);
+    return list_find_(*list, e);
 }
 
+template<class T>
+LinkedHashSet::Entry<T>::Entry(T &value, typename std::list<T>::iterator iterator): value_(value),
+                                                                                    iterator_(iterator) {}
 
-element LinkedHashSet::iterator::operator*() {
-    return *(*hist_iter_);
+template<class T>
+LinkedHashSet::Entry<T>::Entry(const Entry<T> &other): value_(other.value_),
+                                                       iterator_(other.iterator_) {}
+
+template<class T>
+bool LinkedHashSet::Entry<T>::operator==(const LinkedHashSet::Entry<T> &other) const {
+    return false;
 }
 
-LinkedHashSet::iterator &LinkedHashSet::iterator::operator++() {
-    ++hist_iter_;
-    return *this;
+template<class T>
+bool LinkedHashSet::Entry<T>::operator!=(const LinkedHashSet::Entry<T> &other) const {
+    return false;
 }
-
-LinkedHashSet::iterator LinkedHashSet::iterator::operator++(int) {
-    LinkedHashSet::iterator tmp(*this);
-    ++hist_iter_;
-    return tmp;
-}
-
-LinkedHashSet::iterator &LinkedHashSet::iterator::operator--() {
-    hist_iter_--;
-    return *this;
-}
-
-bool LinkedHashSet::iterator::operator==(const LinkedHashSet::iterator &other) const {
-    return hist_iter_ == other.hist_iter_ && lhs == other.lhs;
-}
-
-bool LinkedHashSet::iterator::operator!=(const LinkedHashSet::iterator &other) const {
-    return !operator==(other);
-}
-

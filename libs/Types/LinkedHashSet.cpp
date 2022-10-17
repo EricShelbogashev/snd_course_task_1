@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
-#include <limits>
 #include "LinkedHashSet.h"
 
 template<class T>

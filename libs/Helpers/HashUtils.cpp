@@ -1,6 +1,6 @@
 #include "HashUtils.h"
 
-long long HashUtils::stringHash(std::string const &string) {
+size_t hash::stringHash(std::string const &string) {
     /* Polynomial rolling hash function */
 
     long long hash = 0;

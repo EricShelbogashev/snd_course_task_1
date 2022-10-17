@@ -5,12 +5,9 @@
 #include <iostream>
 #include <string>
 
-class HashUtils {
-public:
-    static long long int stringHash(std::string const &string);
-};
-
+namespace hash {
+    size_t stringHash(std::string const &string);
+}
 // CR: namespace
-int stringHash(std::string const &string);
 
 #endif

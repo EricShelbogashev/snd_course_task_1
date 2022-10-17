@@ -1,12 +1,10 @@
 #ifndef LINKEDHASHMAP_LINKEDHASHSET_H
 #define LINKEDHASHMAP_LINKEDHASHSET_H
 
-#pragma once
-
 #include <list>
 #include <vector>
 #include "Student.h"
-#include "Pair.h"
+#include "Path.h"
 
 template<class T>
 class LinkedHashSet {
@@ -93,6 +91,7 @@ private:
     void deep_copy_arr_(const LinkedHashSet &other);
 };
 
+template class LinkedHashSet<Path>;
 template class LinkedHashSet<Student>;
 
 #endif //LINKEDHASHMAP_LINKEDHASHSET_H

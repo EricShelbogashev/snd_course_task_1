@@ -62,7 +62,7 @@ add_executable(LHStest
         libs/Types/Student.cpp
 
         libs/Helpers/LoadPrivateDataGTest.cpp
-        libs/Helpers/LoadPrivateDataGTest.h)
+        libs/Helpers/LoadPrivateDataGTest.h libs/Types/Path.cpp libs/Types/Path.h)
 
 target_link_libraries(
         LHStest

@@ -14,5 +14,5 @@ bool Student::operator!=(const Student &other) const {
 }
 
 size_t Student::hash() const {
-    return HashUtils::stringHash(std::to_string(this->age_) + this->name_);
+    return hash::stringHash(std::to_string(this->age_) + this->name_);
 }

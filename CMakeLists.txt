@@ -28,12 +28,9 @@ add_executable(${EXEC_NAME}
         libs/Types/Student.h
         libs/Types/Student.cpp
 
-        libs/Types/Pair.cpp
-        libs/Types/Pair.h
-
         libs/Helpers/LoadPrivateDataGTest.cpp
         libs/Helpers/LoadPrivateDataGTest.h
-        libs/Types/Entry.cpp libs/Types/Entry.h)
+        )
 
 target_compile_options(${EXEC_NAME} PUBLIC -O0)
 
@@ -63,12 +60,9 @@ add_executable(LHStest
         libs/Types/LinkedHashSet.cpp
         libs/Types/Student.h
         libs/Types/Student.cpp
-        libs/Types/Pair.cpp
-        libs/Types/Pair.h
 
         libs/Helpers/LoadPrivateDataGTest.cpp
-        libs/Helpers/LoadPrivateDataGTest.h
-        libs/Types/Entry.cpp libs/Types/Entry.h)
+        libs/Helpers/LoadPrivateDataGTest.h)
 
 target_link_libraries(
         LHStest

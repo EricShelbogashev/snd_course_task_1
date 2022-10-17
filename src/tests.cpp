@@ -125,12 +125,12 @@ TEST(RemoveMethodTest, RemoveNonExistent) {
 
 TEST(RemoveMethodTest, RemoveTwice) {
     LinkedHashSet hashSet;
-    for (size_t i = 0; i < 10; i++) {
+    for (size_t i = 0; i < 9; i++) {
         hashSet.insert(testingHelpers::get_student_by_inx(i));
     }
-    hashSet.remove(testingHelpers::get_student_by_inx(3));
-    hashSet.remove(testingHelpers::get_student_by_inx(3));
-    ASSERT_EQ(hashSet.size(), 9);
+    hashSet.remove(testingHelpers::get_student_by_inx(2));
+    hashSet.remove(testingHelpers::get_student_by_inx(1));
+    ASSERT_EQ(hashSet.size(), 7);
 }
 
 TEST(SwapMethodTest, PairEquality) {

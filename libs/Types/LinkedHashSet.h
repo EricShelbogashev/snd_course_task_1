@@ -77,7 +77,7 @@ private:
     std::list<element> *history_;
     inline size_t get_hash_pos_(const element &e) const;
 
-    void hashmap_resize_(size_t new_capacity); // with rehash
+    void hashset_resize_(size_t new_capacity); // with rehash
     void clear_();
     std::list<Entry<element>>::iterator list_find_(std::list<Entry<element>> &list, const element &e);
     std::list<Entry<element>>::iterator arr_find_(const element &e);

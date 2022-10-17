@@ -75,7 +75,7 @@ bool LinkedHashSet::operator!=(const LinkedHashSet &other) {
 bool LinkedHashSet::insert(const element &e) {
     if (arr_occupancy_ > arr_capacity_ * OCCUPACITY_COEFFICIENT_) {
         if (arr_capacity_ * 2 <= UINT32_MAX) {
-            hashmap_resize_(arr_capacity_ * 2);
+            hashset_resize_(arr_capacity_ * 2);
         }
     }
 
@@ -88,10 +88,9 @@ bool LinkedHashSet::insert(const element &e) {
     }
 
     // Existence check.
-    if (list_find_(*cur_list, e) == cur_list->end()) {
+    if (list_find_(*cur_list, e) != cur_list->end()) {
         return false;
     } else {
-        history_->emplace_back(e);
 
         auto it = history_->insert(history_->end(), e);
         cur_list->emplace_back(Entry<element>(*it, it));
@@ -128,7 +127,7 @@ bool LinkedHashSet::remove(const element &e) {
     } else {
         history_->erase(curEntryIter->iterator_);
         cur_list->erase(curEntryIter);
-        elem_count_--;
+        --elem_count_;
         return true;
     }
 }
@@ -175,9 +174,15 @@ void LinkedHashSet::clear_() {
      */
     for (int i = 0; i < arr_capacity_; ++i) {
         std::list<Entry<element>> *&list = arr_[i];
-        delete list;
+        if (list != nullptr) {
+            delete list;
+            --arr_occupancy_;
+        }
+        if (arr_occupancy_ == 0)
+            break;
     }
     history_->clear();
+    elem_count_ = 0;
 }
 
 
@@ -185,7 +190,7 @@ inline size_t LinkedHashSet::get_hash_pos_(const element &e) const {
     return e.hash() % arr_capacity_;
 }
 
-void LinkedHashSet::hashmap_resize_(size_t new_capacity) {
+void LinkedHashSet::hashset_resize_(size_t new_capacity) {
     arr_capacity_ = new_capacity;
     std::list<Entry<element>> **new_arr_ = new std::list<Entry<element>> *[new_capacity]();
 
@@ -202,6 +207,7 @@ void LinkedHashSet::hashmap_resize_(size_t new_capacity) {
         }
 
         new_list->emplace_back(Entry<element>(*it, it));
+        ++it;
     }
 
     deep_delete_arr_();

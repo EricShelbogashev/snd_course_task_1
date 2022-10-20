@@ -33,15 +33,16 @@ LinkedHashSet<T>::~LinkedHashSet() {
         }
     }
     delete[] arr_;
+    delete history_;
 }
 
 template<class T>
 LinkedHashSet<T>::LinkedHashSet(const LinkedHashSet<T> &other) : elem_count_(other.elem_count_),
                                                                  arr_occupancy_(other.arr_occupancy_),
-                                                                 arr_capacity_(other.arr_capacity_),
-                                                                 history_(other.history_) {
+                                                                 arr_capacity_(other.arr_capacity_) {
     arr_ = nullptr;
     deep_copy_arr_(other);
+    history_ = new std::list<T>(*other.history_);
 }
 
 template<class T>
@@ -49,7 +50,8 @@ LinkedHashSet<T> &LinkedHashSet<T>::operator=(const LinkedHashSet<T> &other) {
     if (this != &other) {
         deep_delete_arr_();
         deep_copy_arr_(other);
-        history_ = other.history_;
+        delete history_;
+        history_ = new std::list<T>(*other.history_);
     }
     return *this;
 }

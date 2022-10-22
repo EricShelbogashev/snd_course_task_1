@@ -12,6 +12,7 @@ public:
 
     LinkedHashSet();
 
+    // CR: merge ctors
     explicit LinkedHashSet(size_t capacity);
 
     ~LinkedHashSet();
@@ -55,8 +56,6 @@ private:
 
         Entry(const Entry<K> &other);
 
-        ~Entry() = default;
-
         bool operator==(const Entry<K> &other) const;
 
         bool operator!=(const Entry<K> &other) const;
@@ -75,7 +74,7 @@ private:
     size_t arr_capacity_;
 
     std::list<Entry<T>> **arr_;
-    std::list<T> *history_;
+    std::list<T> history_;
 
     inline size_t get_hash_pos_(const T &e) const;
 

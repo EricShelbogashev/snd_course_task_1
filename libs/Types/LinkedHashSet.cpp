@@ -10,7 +10,7 @@ template<class T>
 LinkedHashSet<T>::LinkedHashSet() : elem_count_(0),
                                     arr_occupancy_(0),
                                     arr_capacity_(DEFAULT_CAPACITY_) {
-
+    // CR: move to init list
     arr_ = new std::list<Entry<T>> *[arr_capacity_]();
     history_ = new std::list<T>();
 }
@@ -48,7 +48,9 @@ LinkedHashSet<T>::LinkedHashSet(const LinkedHashSet<T> &other) : elem_count_(oth
 template<class T>
 LinkedHashSet<T> &LinkedHashSet<T>::operator=(const LinkedHashSet<T> &other) {
     if (this != &other) {
+        // CR: use in dtor
         deep_delete_arr_();
+        // CR: use insert
         deep_copy_arr_(other);
         delete history_;
         history_ = new std::list<T>(*other.history_);
@@ -66,6 +68,12 @@ bool LinkedHashSet<T>::operator==(const LinkedHashSet<T> &other) {
 
     auto it = this->begin();
     auto itEnd = this->end();
+    // for (T & element : *this) {
+    //   if (!other.contains(element)) {
+    //         return false;
+    //     }
+    // }
+    // return true;
     while (it != itEnd) {
         if (!other.contains(*it)) {
             return false;
@@ -85,6 +93,7 @@ bool LinkedHashSet<T>::operator!=(const LinkedHashSet<T> &other) {
 template<class T>
 bool LinkedHashSet<T>::insert(const T &e) {
     if (arr_occupancy_ > arr_capacity_ * OCCUPACITY_COEFFICIENT_) {
+      // std::limits<unit32_t>::max()
         if (arr_capacity_ * 2 <= UINT32_MAX) {
             hashset_resize_(arr_capacity_ * 2);
         }
@@ -93,12 +102,25 @@ bool LinkedHashSet<T>::insert(const T &e) {
     size_t pos = get_hash_pos_(e);
     // Will cur_list evaluate arr_[pos] each time or will it store the result of this function?
     std::list<Entry<T>> *&cur_list = arr_[pos];
+    // std::list<Entry<T>> * list = arr_[pos];
+    // if (list == nullptr) {
+    //   arr_[pos] = new std::list<Entry<T>>();
+    //   list = arr[pos];
+    // }
     if (cur_list == nullptr) {
         cur_list = new std::list<Entry<T>>();
         arr_occupancy_++;
     }
 
     // Existence check.
+    // if (cur_list.contains(e)) {
+    //   return false;
+    // }
+    // auto it = history_->insert(history_->end(), e);
+    // cur_list->emplace_back(Entry<T>(*it, it));
+    // elem_count_++;
+    // return true;
+    
     if (list_find_(*cur_list, e) != cur_list->end()) {
         return false;
     } else {
@@ -119,6 +141,7 @@ bool LinkedHashSet<T>::remove(const T &e) {
     if (cur_list == nullptr)
         return false;
 
+    // std::find()
     auto curEntryIter = list_find_(*cur_list, e);
     if (curEntryIter == cur_list->end()) {
         return false;
@@ -171,6 +194,7 @@ void LinkedHashSet<T>::clear_() {
     /* The Clear method calls the destructors for each element in the list,
      * but retains the current capacity.
      */
+    // CR: merge methods
     for (int i = 0; i < arr_capacity_; ++i) {
         std::list<Entry<T>> *&list = arr_[i];
         if (list != nullptr) {
@@ -238,6 +262,7 @@ bool LinkedHashSet<T>::empty() const {
 template<class T>
 bool LinkedHashSet<T>::contains(const T &e) const {
     // CR: find
+    // return find(e) != end();
     std::list<Entry<T>> *&list = arr_[get_hash_pos_(e)];
     if (list != nullptr) {
         auto it = list->begin();
@@ -265,6 +290,7 @@ inline typename std::list<T>::iterator LinkedHashSet<T>::end() {
 
 template<class T>
 LinkedHashSet<T> &LinkedHashSet<T>::clear() {
+    // CR: inline method
     clear_();
     return *this;
 }
@@ -296,6 +322,7 @@ LinkedHashSet<T>::arr_find_(const T &e) {
 
 template<class T>
 typename std::list<T>::iterator LinkedHashSet<T>::find(const T &e) {
+  // CR: search in arr_, return history iterator from entry
     return std::find(this->begin(), this->end(), e);
 }
 

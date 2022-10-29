@@ -5,12 +5,11 @@
 
 class Path {
 public:
-    Path(std::string path);
-    Path(const Path &other);
+    explicit Path(std::string path);
+    Path(const Path &other) = default;
     bool operator==(const Path & other) const;
     bool operator!=(const Path & other) const;
-    size_t hash() const;
-    std::string get_path();
+    std::string get_path() const;
 private:
     std::string path_;
 };

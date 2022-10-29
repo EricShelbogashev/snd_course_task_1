@@ -6,33 +6,29 @@ project(${PROJECT_NAME}
         LANGUAGES C CXX
         )
 
-execute_process(
-        COMMAND git log -1 --format=%h
-        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-        OUTPUT_VARIABLE GIT_HASH
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+#execute_process(
+#        COMMAND git log -1 --format=%h
+#        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+#        OUTPUT_VARIABLE GIT_HASH
+#        OUTPUT_STRIP_TRAILING_WHITESPACE
+#)
 
-set(EXEC_NAME ${PROJECT_NAME}_${GIT_HASH})
+#set(EXEC_NAME ${PROJECT_NAME}_${GIT_HASH})
+set(EXEC_NAME ${PROJECT_NAME})
 
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(${EXEC_NAME}
         src/main.cpp
 
-        libs/Helpers/HashUtils.cpp
-        libs/Helpers/HashUtils.h
-
         libs/Types/LinkedHashSet.h
-        libs/Types/LinkedHashSet.cpp
         libs/Types/Student.h
         libs/Types/Student.cpp
 
         libs/Types/Path.h
         libs/Types/Path.cpp
 
-        libs/Helpers/LoadPrivateDataGTest.cpp
-        libs/Helpers/LoadPrivateDataGTest.h
+        libs/Types/Hasher.h
         )
 
 target_compile_options(${EXEC_NAME} PUBLIC -O0)
@@ -56,19 +52,15 @@ enable_testing()
 add_executable(LHStest
         src/tests.cpp
 
-        libs/Helpers/HashUtils.cpp
-        libs/Helpers/HashUtils.h
-
         libs/Types/LinkedHashSet.h
-        libs/Types/LinkedHashSet.cpp
         libs/Types/Student.h
         libs/Types/Student.cpp
 
         libs/Types/Path.h
         libs/Types/Path.cpp
 
-        libs/Helpers/LoadPrivateDataGTest.cpp
-        libs/Helpers/LoadPrivateDataGTest.h libs/Types/Path.cpp libs/Types/Path.h)
+        libs/Types/Hasher.h
+        )
 
 target_link_libraries(
         LHStest
@@ -80,3 +72,8 @@ gtest_discover_tests(LHStest)
 
 # -------------------------------------------------------------
 
+add_compile_options(-fsanitize=address)
+add_link_options(-fsanitize=address)
+
+target_compile_options(${EXEC_NAME} PRIVATE -fsanitize=address)
+target_link_options(${EXEC_NAME} PRIVATE -fsanitize=address)

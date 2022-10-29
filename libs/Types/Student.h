@@ -11,7 +11,6 @@ struct Student {
     Student(const Student &other);
     bool operator==(const Student & other) const;
     bool operator!=(const Student & other) const;
-    size_t hash() const;
     unsigned age_;
     std::string name_;
 };

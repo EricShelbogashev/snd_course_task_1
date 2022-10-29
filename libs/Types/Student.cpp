@@ -1,5 +1,4 @@
 #include "Student.h"
-#include "../Helpers/HashUtils.h"
 
 Student::Student(unsigned age, std::string name) : age_(age), name_(name) {}
 
@@ -11,8 +10,4 @@ bool Student::operator==(const Student &other) const {
 
 bool Student::operator!=(const Student &other) const {
     return !operator==(other);
-}
-
-size_t Student::hash() const {
-    return hash::stringHash(std::to_string(this->age_) + this->name_);
 }

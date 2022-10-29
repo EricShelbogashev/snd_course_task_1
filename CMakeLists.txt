@@ -22,6 +22,8 @@ add_executable(${EXEC_NAME}
         src/main.cpp
 
         libs/Types/LinkedHashSet.h
+        libs/Types/LinkedHashSet.hpp
+
         libs/Types/Student.h
         libs/Types/Student.cpp
 
@@ -29,7 +31,7 @@ add_executable(${EXEC_NAME}
         libs/Types/Path.cpp
 
         libs/Types/Hasher.h
-        )
+        libs/Types/Hasher.hpp)
 
 target_compile_options(${EXEC_NAME} PUBLIC -O0)
 
@@ -53,6 +55,8 @@ add_executable(LHStest
         src/tests.cpp
 
         libs/Types/LinkedHashSet.h
+        libs/Types/LinkedHashSet.hpp
+
         libs/Types/Student.h
         libs/Types/Student.cpp
 
@@ -60,7 +64,7 @@ add_executable(LHStest
         libs/Types/Path.cpp
 
         libs/Types/Hasher.h
-        )
+        libs/Types/Hasher.hpp)
 
 target_link_libraries(
         LHStest

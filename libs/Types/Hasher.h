@@ -6,18 +6,22 @@
 #include "Student.h"
 #include "Path.h"
 
-class StringHasher {
-public:
-    size_t operator()(const Student &e) const {
-        return std::hash<std::string>{}(std::to_string(e.age_) + e.name_);
-    }
+/* Hasher interface */
+template<class T>
+class Hasher {
+    virtual size_t operator()(const T &e) const = 0;
 };
 
-class PathHasher {
+class StudentHasher : public Hasher<Student> {
 public:
-    size_t operator()(const Path &e) const {
-        return std::hash<std::string>{}(e.get_path());
-    }
+    size_t operator()(const Student &e) const override;
 };
+
+class PathHasher : public Hasher<Path> {
+public:
+    size_t operator()(const Path &e) const override;
+};
+
+#include "Hasher.hpp"
 
 #endif //LINKEDHASHSET_HASHER_H

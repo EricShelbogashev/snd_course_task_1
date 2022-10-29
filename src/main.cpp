@@ -9,7 +9,7 @@ int main() {
 
     hashSet1.insert(path1);
     hashSet1.insert(path2);
-    for (Path e: hashSet1) {
+    for (const Path& e: hashSet1) {
         std::cout << e.get_path() << std::endl;
     }
 }

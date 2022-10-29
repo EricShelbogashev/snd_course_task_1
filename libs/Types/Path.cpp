@@ -1,6 +1,8 @@
 #include "Path.h"
 
-Path::Path(std::string path): path_(path) {}
+#include <utility>
+
+Path::Path(std::string path): path_(std::move(path)) {}
 
 bool Path::operator==(const Path &other) const {
     return path_ == other.path_;

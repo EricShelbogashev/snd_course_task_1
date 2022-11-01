@@ -8,7 +8,7 @@
 template<typename T, typename Hasher=std::hash<T>>
 class LinkedHashSet {
 public:
-
+    // CR: move comments here
     explicit LinkedHashSet(size_t capacity = DEFAULT_CAPACITY_);
     ~LinkedHashSet();
     LinkedHashSet(const LinkedHashSet &other);
@@ -27,7 +27,7 @@ public:
     typename std::list<T>::iterator end();
 
 private:
-
+    // CR: <class V>
     template<class K>
     class Entry {
     public:

@@ -19,6 +19,18 @@ LinkedHashSet<T, Hasher>::LinkedHashSet(const LinkedHashSet &other) : arr_capaci
     init_hashset(other.arr_capacity_);
 }
 
+template<typename T, typename Hasher>
+LinkedHashSet<T, Hasher> &LinkedHashSet<T, Hasher>::operator=(const LinkedHashSet &other) {
+    if (this != &other) {
+        /* Rewrite history_ and restore hashset arr_ from new history_. */
+        // CR: use swap trick
+        delete_arr_();
+        history_ = other.history_;
+        init_hashset(other.arr_capacity_);
+    }
+    return *this;
+}
+
 /* Put element of T type in hashset. */
 template<typename T, typename Hasher>
 bool LinkedHashSet<T, Hasher>::insert(const T &e) {
@@ -38,6 +50,7 @@ bool LinkedHashSet<T, Hasher>::insert(const T &e) {
 
     /* Check for element existence and insert, if hashset doesn't contain it. */
     if (std::find_if(cur_list->begin(), cur_list->end(),
+                     // CR: extract to variable (auto)
                      [&e](const Entry<T> &x) { return x.value_ == e; })
         != cur_list->end()) {
         return false;
@@ -54,12 +67,13 @@ bool LinkedHashSet<T, Hasher>::insert(const T &e) {
 template<typename T, typename Hasher>
 bool LinkedHashSet<T, Hasher>::remove(const T &e) {
     size_t pos = get_hash_pos_(e, arr_capacity_);
-    std::list<Entry<T>> *&cur_list = arr_[pos];
+    std::list<Entry<T>> * cur_list = arr_[pos];
 
     if (cur_list == nullptr)
         return false;
 
     /* Get an iterator for the Entry with e, which helps to remove e in O(1) from history_. */
+    // CR: is_in_list(list, e)
     auto curEntryIter = std::find_if(cur_list->begin(), cur_list->end(),
                                      [e](const Entry<T> &x) { return x.value_ == e; });
 
@@ -92,8 +106,11 @@ bool LinkedHashSet<T, Hasher>::empty() const {
 
 template<typename T, typename Hasher>
 bool LinkedHashSet<T, Hasher>::contains(const T &e) const {
+  // CR: find(e) != end()
+
     std::list<Entry<T>> *&list = arr_[get_hash_pos_(e, arr_capacity_)];
     /* Uses a lambda expression to search for an Entry by element. */
+    //CR: return list == nullptr ? false : is_in_list(list, e);
     if (list != nullptr)
         return list->end() !=
                std::find_if(list->begin(), list->end(), [&e](const Entry<T> &x) { return x.value_ == e; });
@@ -105,19 +122,9 @@ template<typename T, typename Hasher>
 LinkedHashSet<T, Hasher> &LinkedHashSet<T, Hasher>::clear() {
     delete_arr_();
     arr_capacity_ = DEFAULT_CAPACITY_;
+    // CR: either shrink arr_ in remove or don't shrink at all
     arr_ = new std::list<Entry<T>> *[DEFAULT_CAPACITY_]();
     history_.clear();
-    return *this;
-}
-
-template<typename T, typename Hasher>
-LinkedHashSet<T, Hasher> &LinkedHashSet<T, Hasher>::operator=(const LinkedHashSet &other) {
-    if (this != &other) {
-        /* Rewrite history_ and restore hashset arr_ from new history_. */
-        delete_arr_();
-        history_ = other.history_;
-        init_hashset(other.arr_capacity_);
-    }
     return *this;
 }
 
@@ -127,7 +134,8 @@ bool LinkedHashSet<T, Hasher>::operator==(const LinkedHashSet &other) {
         return false;
     }
 
-    for (T e: *this) {
+    // CR: https://en.cppreference.com/w/cpp/algorithm/all_any_none_of
+    for (const T & e: *this) {
         if (!other.contains(e)) {
             return false;
         }
@@ -142,6 +150,7 @@ bool LinkedHashSet<T, Hasher>::operator!=(const LinkedHashSet &other) {
 
 template<typename T, typename Hasher>
 typename std::list<T>::iterator LinkedHashSet<T, Hasher>::find(const T &e) {
+    // CR: search in list, not in history
     return std::find(this->begin(), this->end(), e);
 }
 
@@ -163,18 +172,53 @@ size_t LinkedHashSet<T, Hasher>::get_hash_pos_(const T &e, size_t capacity) cons
     return Hasher()(e) % capacity;
 }
 
+template<typename T, typename Hasher>
+void LinkedHashSet<T, Hasher>::resize(size_t new_capacity) {
+  auto new_arr = new std::list<Entry<T>> *[capacity]();
+  for (auto & it : this.history_) {
+    size_t pos = get_hash_pos_(e, arr_capacity_);
+    std::list<Entry<T>> & cur_list = get_list(pos, new_arr);
+    cur_list.emplace_back(Entry<T>(*it, it));
+  }
+  delete_arr_(arr_);
+  arr_ = new_arr;
+}
+
+std::list<Entry<T>> & get_list(std::list<Entry<T>> ** arr, size_t pos) {
+  std::list<Entry<T>> *cur_list = arr[pos];
+  if (cur_list == nullptr) {
+    arr[pos] = new std::list<Entry<T>>();
+    cur_list = arr[pos];
+  }
+  return *cur_list;
+}
+
+void insert(std::list<Entry<T>> ** arr, const T & e, std::list<T>::iterator & it) {
+  size_t pos = get_hash_pos_(e, arr_capacity_);
+  std::list<Entry<T>> *cur_list = arr_[pos];
+  if (cur_list == nullptr) {
+    arr_[pos] = new std::list<Entry<T>>();
+    cur_list = arr_[pos];
+  }
+  cur_list->emplace_back(Entry<T>(*it, it));
+}
+
 /* Restore arr_ from history_;
  * Overrides arr_ without delete[] for previous arr_;
  * Capacity must be higher than size of history.
  * */
 template<typename T, typename Hasher>
 void LinkedHashSet<T, Hasher>::init_hashset(size_t capacity) {
+    // CR: assert
     arr_ = new std::list<Entry<T>> *[capacity]();
     arr_capacity_ = capacity;
 
-    std::list<T> list = history_;
+    // CR: swap / move
+    // std::list<T> & tmp = history_;
+    // history_ = std::list<T>();
+    std::list<T> tmp = history_;
     history_.clear();
-    for (T e: list) {
+    for (const T & e: tmp) {
         insert(e);
     }
 }
@@ -182,7 +226,14 @@ void LinkedHashSet<T, Hasher>::init_hashset(size_t capacity) {
 
 template<typename T, typename Hasher>
 inline void LinkedHashSet<T, Hasher>::delete_arr_() {
-    deep_delete_sub_arr_();
+    if (arr_ == nullptr)
+      return;
+
+    /* NOTICE: Optimization which uses number of elements is not able, cause unknown which lists wasn't be initialized. */
+    for (size_t i = 0; i < arr_capacity_; i++) {
+        std::list<Entry<T>> * cur_list = arr_[i];
+        delete cur_list;
+    }
     delete[] arr_;
 }
 
@@ -194,7 +245,7 @@ void LinkedHashSet<T, Hasher>::deep_delete_sub_arr_() {
 
     /* NOTICE: Optimization which uses number of elements is not able, cause unknown which lists wasn't be initialized. */
     for (size_t i = 0; i < arr_capacity_; i++) {
-        std::list<Entry<T>> *&cur_list = arr_[i];
+        std::list<Entry<T>> * cur_list = arr_[i];
         delete cur_list;
     }
 }

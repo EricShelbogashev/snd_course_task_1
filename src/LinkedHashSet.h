@@ -56,7 +56,8 @@ private:
     size_t _arrCapacity;
 
     /* Container of buckets lists.
-     * _arr buckets contain an Entry with an iterator to the object and object's reference for O(1) fast access.
+     * _arr buckets contain an _history iterator to the object for O(1) fast access.
+     * bucket := _history iterator list
      */
     std::list<typename std::list<T>::iterator> **_arr;
 
@@ -65,7 +66,7 @@ private:
 
     Hasher _hasher;
 
-    /* Returns an index of bucket in _arr, which contains Entry with e object.
+    /* Returns an index of bucket in _arr, which contains _history iterator to e object.
      *
      * @param e         The object whose index is to be obtained. It will be hashed with std::hash().
      * @param capacity  Hash division module.
@@ -85,16 +86,16 @@ private:
      */
     void _resize(size_t newCapacity);
 
-    /* Returns an iterator of the list pointing to the Entry containing e.
+    /* Returns an iterator of the bucket pointing to the _history iterator to e.
      *
-     * @param list  Entry list where will be searched Entry with e.
+     * @param list  list where will be searched _history iterator to e.
      * @param e     Search object with type T.
      */
     inline typename std::list<typename std::list<T>::iterator>::iterator
     _findInList(std::list<typename std::list<T>::iterator> *list, const T &e) const;
 
-    /* Returns an Entry list from arr with position pos.
-     * If the list of Entry at index pos is nullptr, it will be initialized and placed in _arr at pos.
+    /* Returns an bucket from arr with position pos.
+     * If the bucket at index pos is nullptr, it will be initialized and placed in _arr at pos.
      *
      * @param arr   Bucket array. Must be initialized.
      * @param pos   Bucket index. Must be in [0, _arrCapacity].
@@ -102,7 +103,7 @@ private:
     inline std::list<typename std::list<T>::iterator> &
     _getList(std::list<typename std::list<T>::iterator> **arr, size_t pos);
 
-    /* Puts T object from *it in the bucket from arr filling an Entry with a list<T> iterator it.
+    /* Puts T object from *it in the bucket from arr filling an iterator it.
      * Allocates a bucket in the arr if needed.
      *
      * @param arr       Bucket array. Must be initialized.

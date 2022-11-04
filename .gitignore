@@ -5,5 +5,5 @@ build
 *.exe
 .vscode
 
-libs/Types/Entry.*
-libs/Types/Pair.*
+src/Types/Entry.*
+src/Types/Pair.*

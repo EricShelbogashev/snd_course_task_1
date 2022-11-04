@@ -19,7 +19,7 @@ set(EXEC_NAME ${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(${EXEC_NAME}
-        src/main.cpp
+        main.cpp
 
         libs/Types/LinkedHashSet.h
         libs/Types/LinkedHashSet.hpp
@@ -45,7 +45,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(LHStest
-        src/tests.cpp
+        tests/tests.cpp
 
         libs/Types/LinkedHashSet.h
         libs/Types/LinkedHashSet.hpp

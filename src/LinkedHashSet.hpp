@@ -6,7 +6,7 @@
 
 template<typename T, typename Hasher>
 LinkedHashSet<T, Hasher>::LinkedHashSet(size_t capacity) :  _arrCapacity(capacity),
-                                                            _arr(new std::list<Entry> *[_arrCapacity]()) {
+                                                            _arr(new std::list<typename std::list<T>::iterator> *[_arrCapacity]()) {
 }
 
 template<typename T, typename Hasher>
@@ -48,7 +48,7 @@ bool LinkedHashSet<T, Hasher>::insert(const T &e) {
 template<typename T, typename Hasher>
 bool LinkedHashSet<T, Hasher>::remove(const T &e) {
     size_t pos = _getHashPos(e, _arrCapacity);
-    std::list<Entry> *cur_list = _arr[pos];
+    std::list<typename std::list<T>::iterator> *cur_list = _arr[pos];
 
     if (cur_list == nullptr) {
         return false;
@@ -59,7 +59,7 @@ bool LinkedHashSet<T, Hasher>::remove(const T &e) {
     if (curEntryIter == cur_list->end()) {
         return false;
     } else {
-        _history.erase(curEntryIter->_iterator);
+        _history.erase(*curEntryIter);
         if (_arrCapacity * (1 - CAPACITY_COEFF) > _history.size() && _arrCapacity > DEFAULT_CAPACITY) {
             _resize(_arrCapacity / 2);
         } else {
@@ -97,7 +97,7 @@ template<typename T, typename Hasher>
 LinkedHashSet<T, Hasher> &LinkedHashSet<T, Hasher>::clear() {
     _deleteArr();
     _arrCapacity = DEFAULT_CAPACITY;
-    _arr = new std::list<Entry> *[DEFAULT_CAPACITY]();
+    _arr = new std::list<typename std::list<T>::iterator> *[DEFAULT_CAPACITY]();
     _history.clear();
     return *this;
 }
@@ -120,12 +120,12 @@ bool LinkedHashSet<T, Hasher>::operator!=(LinkedHashSet &other) {
 template<typename T, typename Hasher>
 typename std::list<T>::iterator LinkedHashSet<T, Hasher>::find(const T &e) {
     size_t pos = _getHashPos(e, _arrCapacity);
-    std::list<LinkedHashSet<T, Hasher>::Entry> *list = _arr[pos];
+    std::list<typename std::list<T>::iterator> *list = _arr[pos];
     if (list == nullptr) {
         return this->end();
     }
     auto entryIter = _findInList(list, e);
-    return entryIter == list->end() ? this->end() : entryIter->_iterator;
+    return entryIter == list->end() ? this->end() : *entryIter;
 }
 
 template<typename T, typename Hasher>
@@ -146,7 +146,7 @@ size_t LinkedHashSet<T, Hasher>::_getHashPos(const T &e, size_t capacity) const 
 template<typename T, typename Hasher>
 void LinkedHashSet<T, Hasher>::_resize(size_t newCapacity) {
     _deleteArr();
-    auto new_arr = new std::list<Entry> *[newCapacity]();
+    auto new_arr = new std::list<typename std::list<T>::iterator> *[newCapacity]();
     for (auto it = _history.begin(); it != _history.end(); ++it) {
         _insert(new_arr, it, newCapacity);
     }
@@ -159,7 +159,6 @@ inline void LinkedHashSet<T, Hasher>::_deleteArr() {
     if (this->_arr == nullptr) {
         return;
     }
-
     for (size_t i = 0; i < _arrCapacity; i++) {
         delete _arr[i];
     }
@@ -167,19 +166,19 @@ inline void LinkedHashSet<T, Hasher>::_deleteArr() {
 }
 
 template<typename T, typename Hasher>
-inline typename std::list<typename LinkedHashSet<T, Hasher>::Entry>::iterator
-LinkedHashSet<T, Hasher>::_findInList(std::list<Entry> *list, const T &e) const {
+inline typename std::list<typename std::list<T>::iterator>::iterator
+LinkedHashSet<T, Hasher>::_findInList(std::list<typename std::list<T>::iterator> *list, const T &e) const {
     assert(list != nullptr);
-    return std::find_if(list->begin(), list->end(), [e](const Entry &x) { return x._value == e; });
+    return std::find_if(list->begin(), list->end(), [e](const typename std::list<T>::iterator &x) { return *x == e; });
 }
 
 template<typename T, typename Hasher>
-inline std::list<typename LinkedHashSet<T, Hasher>::Entry> &
-LinkedHashSet<T, Hasher>::_getList(std::list<Entry> **arr, size_t pos) {
+inline std::list<typename std::list<T>::iterator> &
+LinkedHashSet<T, Hasher>::_getList(std::list<typename std::list<T>::iterator> **arr, size_t pos) {
     assert(arr != nullptr);
-    std::list<Entry> *curList = arr[pos];
+    std::list<typename std::list<T>::iterator> *curList = arr[pos];
     if (curList == nullptr) {
-        arr[pos] = new std::list<typename LinkedHashSet<T, Hasher>::Entry>();
+        arr[pos] = new std::list<typename std::list<T>::iterator>();
         curList = arr[pos];
     }
     return *curList;
@@ -187,29 +186,10 @@ LinkedHashSet<T, Hasher>::_getList(std::list<Entry> **arr, size_t pos) {
 
 template<typename T, typename Hasher>
 void
-LinkedHashSet<T, Hasher>::_insert(std::list<Entry> **arr, typename std::list<T>::iterator &it, size_t capacity) {
+LinkedHashSet<T, Hasher>::_insert(std::list<typename std::list<T>::iterator> **arr, typename std::list<T>::iterator &it, size_t capacity) {
     size_t pos = _getHashPos(*it, capacity);
-    std::list<Entry> &curList = _getList(arr, pos);
-    curList.emplace_back(Entry(*it, it));
-}
-
-template<typename T, typename Hasher>
-LinkedHashSet<T, Hasher>::Entry::Entry(T &value, typename std::list<T>::iterator &iterator) : _value(value),
-                                                                                              _iterator(iterator) {
-}
-
-template<typename T, typename Hasher>
-LinkedHashSet<T, Hasher>::Entry::Entry(const LinkedHashSet::Entry &other) : _value(other._value),
-                                                                            _iterator(other._iterator) {}
-
-template<typename T, typename Hasher>
-bool LinkedHashSet<T, Hasher>::Entry::operator==(const LinkedHashSet::Entry &other) const {
-    return _value == other._value && _iterator == other._iterator;
-}
-
-template<typename T, typename Hasher>
-bool LinkedHashSet<T, Hasher>::Entry::operator!=(const LinkedHashSet::Entry &other) const {
-    return !operator==(other);
+    std::list<typename std::list<T>::iterator> &curList = _getList(arr, pos);
+    curList.emplace_back(it);
 }
 
 #endif //LINKEDHASHSET_LINKEDHASHSET_HPP

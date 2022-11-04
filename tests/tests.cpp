@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../libs/Types/LinkedHashSet.h"
+#include "../src/LinkedHashSet.h"
 #include <utility>
 
 struct Student {
@@ -98,9 +98,6 @@ TEST(EqualityTest, InsertSameElements) {
     }
     i = 0;
     while (i < cap_diff * 2) {
-        if (i == 160) {
-            std::cout <<"";
-        }
         hashSet2.remove(testingHelpers::get_student_by_inx(i));
         i++;
     }

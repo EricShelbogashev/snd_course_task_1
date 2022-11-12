@@ -6,7 +6,8 @@
 
 template<typename T, typename Hasher>
 LinkedHashSet<T, Hasher>::LinkedHashSet(size_t capacity) :  _arrCapacity(capacity),
-                                                            _arr(new std::list<typename std::list<T>::iterator> *[_arrCapacity]()) {
+                                                            _buckets(
+                                                                    new std::list<typename std::list<T>::iterator> *[_arrCapacity]()) {
 }
 
 template<typename T, typename Hasher>
@@ -18,7 +19,7 @@ template<typename T, typename Hasher>
 LinkedHashSet<T, Hasher>::LinkedHashSet(const LinkedHashSet &other) : _arrCapacity(other._arrCapacity),
                                                                       _history(other._history),
                                                                       _hasher(other._hasher),
-                                                                      _arr(nullptr) {
+                                                                      _buckets(nullptr) {
     _resize(other._arrCapacity);
 }
 
@@ -41,14 +42,14 @@ bool LinkedHashSet<T, Hasher>::insert(const T &e) {
     }
 
     auto it = _history.insert(_history.end(), e);
-    _insert(_arr, it, _arrCapacity);
+    _insert(_buckets, it, _arrCapacity);
     return true;
 }
 
 template<typename T, typename Hasher>
 bool LinkedHashSet<T, Hasher>::remove(const T &e) {
-    size_t pos = _getHashPos(e, _arrCapacity);
-    std::list<typename std::list<T>::iterator> *cur_list = _arr[pos];
+    size_t pos = _getBucketIdx(e, _arrCapacity);
+    std::list<typename std::list<T>::iterator> *cur_list = _buckets[pos];
 
     if (cur_list == nullptr) {
         return false;
@@ -60,18 +61,16 @@ bool LinkedHashSet<T, Hasher>::remove(const T &e) {
         return false;
     }
     _history.erase(*curEntryIter);
+    cur_list->erase(curEntryIter);
     if (_arrCapacity * (1 - CAPACITY_COEFF) > _history.size() && _arrCapacity > DEFAULT_CAPACITY) {
         _resize(_arrCapacity / 2);
-    } else {
-        // CR: better to erase in both branches, because _resize may change and will forget to update callers
-        cur_list->erase(curEntryIter);
     }
     return true;
 }
 
 template<typename T, typename Hasher>
 void LinkedHashSet<T, Hasher>::swap(LinkedHashSet &other) {
-    std::swap(_arr, other._arr);
+    std::swap(_buckets, other._buckets);
     std::swap(_arrCapacity, other._arrCapacity);
     std::swap(_history, other._history);
     std::swap(_hasher, other._hasher);
@@ -97,7 +96,7 @@ template<typename T, typename Hasher>
 LinkedHashSet<T, Hasher> &LinkedHashSet<T, Hasher>::clear() {
     _deleteArr();
     _arrCapacity = DEFAULT_CAPACITY;
-    _arr = new std::list<typename std::list<T>::iterator> *[DEFAULT_CAPACITY]();
+    _buckets = new std::list<typename std::list<T>::iterator> *[DEFAULT_CAPACITY]();
     _history.clear();
     return *this;
 }
@@ -119,8 +118,8 @@ bool LinkedHashSet<T, Hasher>::operator!=(LinkedHashSet &other) {
 
 template<typename T, typename Hasher>
 typename std::list<T>::iterator LinkedHashSet<T, Hasher>::find(const T &e) {
-    size_t pos = _getHashPos(e, _arrCapacity);
-    std::list<typename std::list<T>::iterator> *list = _arr[pos];
+    size_t pos = _getBucketIdx(e, _arrCapacity);
+    std::list<typename std::list<T>::iterator> *list = _buckets[pos];
     if (list == nullptr) {
         return this->end();
     }
@@ -139,7 +138,7 @@ typename std::list<T>::iterator LinkedHashSet<T, Hasher>::end() {
 }
 
 template<typename T, typename Hasher>
-size_t LinkedHashSet<T, Hasher>::_getHashPos(const T &e, size_t capacity) const {
+size_t LinkedHashSet<T, Hasher>::_getBucketIdx(const T &e, size_t capacity) const {
     return _hasher(e) % capacity;
 }
 
@@ -150,45 +149,46 @@ void LinkedHashSet<T, Hasher>::_resize(size_t newCapacity) {
     for (auto it = _history.begin(); it != _history.end(); ++it) {
         _insert(new_arr, it, newCapacity);
     }
-    _arr = new_arr;
+    _buckets = new_arr;
     _arrCapacity = newCapacity;
 }
 
 template<typename T, typename Hasher>
 inline void LinkedHashSet<T, Hasher>::_deleteArr() {
-    if (this->_arr == nullptr) {
+    if (this->_buckets == nullptr) {
         return;
     }
     for (size_t i = 0; i < _arrCapacity; i++) {
-        delete _arr[i];
+        delete _buckets[i];
     }
-    delete[] this->_arr;
+    delete[] this->_buckets;
 }
 
 template<typename T, typename Hasher>
 inline typename std::list<typename std::list<T>::iterator>::iterator
-      LinkedHashSet<T, Hasher>::_findInList(std::list<typename std::list<T>::iterator> *list, const T &e) const {
+LinkedHashSet<T, Hasher>::_findInList(std::list<typename std::list<T>::iterator> *list, const T &e) const {
     assert(list != nullptr);
     return std::find_if(list->begin(), list->end(), [e](const typename std::list<T>::iterator &x) { return *x == e; });
 }
 
 template<typename T, typename Hasher>
 inline std::list<typename std::list<T>::iterator> &
-LinkedHashSet<T, Hasher>::_getList(std::list<typename std::list<T>::iterator> **arr, size_t pos) {
-    assert(arr != nullptr);
-    std::list<typename std::list<T>::iterator> *curList = arr[pos];
+LinkedHashSet<T, Hasher>::_getList(std::list<typename std::list<T>::iterator> **bucketsArr, size_t pos) {
+    assert(bucketsArr != nullptr);
+    std::list<typename std::list<T>::iterator> *curList = bucketsArr[pos];
     if (curList == nullptr) {
-        arr[pos] = new std::list<typename std::list<T>::iterator>();
-        curList = arr[pos];
+        bucketsArr[pos] = new std::list<typename std::list<T>::iterator>();
+        curList = bucketsArr[pos];
     }
     return *curList;
 }
 
 template<typename T, typename Hasher>
 void
-LinkedHashSet<T, Hasher>::_insert(std::list<typename std::list<T>::iterator> **arr, typename std::list<T>::iterator &it, size_t capacity) {
-    size_t pos = _getHashPos(*it, capacity);
-    std::list<typename std::list<T>::iterator> &curList = _getList(arr, pos);
+LinkedHashSet<T, Hasher>::_insert(std::list<typename std::list<T>::iterator> **bucketsArr,
+                                  typename std::list<T>::iterator &it, size_t capacity) {
+    size_t pos = _getBucketIdx(*it, capacity);
+    std::list<typename std::list<T>::iterator> &curList = _getList(bucketsArr, pos);
     curList.emplace_back(it);
 }
 

@@ -12,12 +12,15 @@ public:
 
     ~LinkedHashSet();
 
+    // CR: is new copy independent from the old one?
     LinkedHashSet(const LinkedHashSet &other);
 
     /* Put element of T type in hashset. */
+    // CR: when this method returns true? when it returns false? mention in doc
     bool insert(const T &e);
 
     /* Remove element from hashset. */
+    // CR: same as insert
     bool remove(const T &e);
 
     void swap(LinkedHashSet &other);
@@ -33,6 +36,7 @@ public:
 
     LinkedHashSet &operator=(LinkedHashSet other);
 
+    // CR: comment? also mention that order does not matter
     bool operator==(LinkedHashSet &other);
 
     bool operator!=(LinkedHashSet &other);
@@ -59,6 +63,7 @@ private:
      * _arr buckets contain an _history iterator to the object for O(1) fast access.
      * bucket := _history iterator list
      */
+    // CR: maybe rename to _buckets? not insisting though
     std::list<typename std::list<T>::iterator> **_arr;
 
     /* _history is a main storage of objects. */
@@ -71,6 +76,11 @@ private:
      * @param e         The object whose index is to be obtained. It will be hashed with std::hash().
      * @param capacity  Hash division module.
      */
+    // CR: I usually prefer a clear naming instead of lots of comments
+    // CR: e.g. this method can be renamed to _getBucketIdx.
+    // CR: Also comments are not verified, so if you described method logic in comment
+    // CR: and then changed this logic, comment is not verified automatically, so it can became stale pretty fast
+    // CR: This is only a recommendation, it's up to you if you want to follow it :)
     inline size_t _getHashPos(const T &e, size_t capacity) const;
 
     /* Deletes all buckets and _arr using delete and delete[] respectively.

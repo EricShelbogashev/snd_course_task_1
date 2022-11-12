@@ -58,15 +58,15 @@ bool LinkedHashSet<T, Hasher>::remove(const T &e) {
 
     if (curEntryIter == cur_list->end()) {
         return false;
-    } else {
-        _history.erase(*curEntryIter);
-        if (_arrCapacity * (1 - CAPACITY_COEFF) > _history.size() && _arrCapacity > DEFAULT_CAPACITY) {
-            _resize(_arrCapacity / 2);
-        } else {
-            cur_list->erase(curEntryIter);
-        }
-        return true;
     }
+    _history.erase(*curEntryIter);
+    if (_arrCapacity * (1 - CAPACITY_COEFF) > _history.size() && _arrCapacity > DEFAULT_CAPACITY) {
+        _resize(_arrCapacity / 2);
+    } else {
+        // CR: better to erase in both branches, because _resize may change and will forget to update callers
+        cur_list->erase(curEntryIter);
+    }
+    return true;
 }
 
 template<typename T, typename Hasher>
@@ -167,7 +167,7 @@ inline void LinkedHashSet<T, Hasher>::_deleteArr() {
 
 template<typename T, typename Hasher>
 inline typename std::list<typename std::list<T>::iterator>::iterator
-LinkedHashSet<T, Hasher>::_findInList(std::list<typename std::list<T>::iterator> *list, const T &e) const {
+      LinkedHashSet<T, Hasher>::_findInList(std::list<typename std::list<T>::iterator> *list, const T &e) const {
     assert(list != nullptr);
     return std::find_if(list->begin(), list->end(), [e](const typename std::list<T>::iterator &x) { return *x == e; });
 }

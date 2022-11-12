@@ -1,0 +1,274 @@
+\hypertarget{classLinkedHashSet}{}\doxysection{Linked\+Hash\+Set$<$ T, Hasher $>$ Class Template Reference}
+\label{classLinkedHashSet}\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classLinkedHashSet_a9cb79a8a08d2bbc85460c1678710842f}{Linked\+Hash\+Set}} (const \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}} \&other)
+\begin{DoxyCompactList}\small\item\em Initializes the hashset with same elements and same inserted order with {\ttfamily other}. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classLinkedHashSet_a01f38bae6e15f5b775b5e4c42ba0666b}{insert}} (const T \&e)
+\begin{DoxyCompactList}\small\item\em Inserts an element into hashset. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classLinkedHashSet_ac5806711d58e64920d59bd6765b9e37b}{remove}} (const T \&e)
+\begin{DoxyCompactList}\small\item\em Remove element from hashset. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classLinkedHashSet_a213693b60cdd830d9df8f6bdc1241d71}\label{classLinkedHashSet_a213693b60cdd830d9df8f6bdc1241d71}} 
+\mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}} \& \mbox{\hyperlink{classLinkedHashSet_a213693b60cdd830d9df8f6bdc1241d71}{clear}} ()
+\begin{DoxyCompactList}\small\item\em Restore hashset to original form (including size and capacity). \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classLinkedHashSet_a8f44692a9a5e35eee55c7ab5f00883c4}{operator==}} (\mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}} \&other)
+\begin{DoxyCompactList}\small\item\em Classical in understanding the equivalence relation between hashsets. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+size\+\_\+t \mbox{\hyperlink{classLinkedHashSet_a3087455cae0019aaa80af1dc13c4c76f}{\+\_\+get\+Bucket\+Idx}} (const T \&e, size\+\_\+t capacity) const
+\item 
+void \mbox{\hyperlink{classLinkedHashSet_a24e93aa87389b19e8acf74820b8376cf}{\+\_\+delete\+Arr}} ()
+\begin{DoxyCompactList}\small\item\em Deletes all buckets and \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}} using {\bfseries{delete}} and {\bfseries{delete\mbox{[}\mbox{]}}} respectively. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classLinkedHashSet_a007a24bfca04321427d0cb650cc02a16}{\+\_\+resize}} (size\+\_\+t new\+Capacity)
+\begin{DoxyCompactList}\small\item\em Replaces \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}} with a container of the same type with size {\ttfamily new\+Capacity}. \end{DoxyCompactList}\item 
+std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$\+::iterator \mbox{\hyperlink{classLinkedHashSet_a12a756064d59792af0697c3bd66af9a9}{\+\_\+find\+In\+List}} (std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$ $\ast$list, const T \&e) const
+\item 
+std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$ \& \mbox{\hyperlink{classLinkedHashSet_a82f259201d7aaffcad5b6104da858577}{\+\_\+get\+List}} (std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$ $\ast$$\ast$buckets\+Arr, size\+\_\+t pos)
+\item 
+void \mbox{\hyperlink{classLinkedHashSet_aa4c95d54aace62088d01a51e4b6a1d56}{\+\_\+insert}} (std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$ $\ast$$\ast$buckets\+Arr, typename std\+::list$<$ T $>$\+::iterator \&it, size\+\_\+t capacity)
+\begin{DoxyCompactList}\small\item\em Puts T object from $\ast$(it) in the bucket from {\ttfamily buckets\+Arr} filling an iterator {\ttfamily it}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classLinkedHashSet_afcaadb26d32ed644766652a30702d06e}\label{classLinkedHashSet_afcaadb26d32ed644766652a30702d06e}} 
+size\+\_\+t \mbox{\hyperlink{classLinkedHashSet_afcaadb26d32ed644766652a30702d06e}{\+\_\+arr\+Capacity}}
+\begin{DoxyCompactList}\small\item\em Size of arr array, number of buckets. \end{DoxyCompactList}\item 
+std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$ $\ast$$\ast$ \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}}
+\begin{DoxyCompactList}\small\item\em Container of buckets lists. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classLinkedHashSet_a233e2ad20a071d0979b435b4cd75a92f}\label{classLinkedHashSet_a233e2ad20a071d0979b435b4cd75a92f}} 
+std\+::list$<$ T $>$ \mbox{\hyperlink{classLinkedHashSet_a233e2ad20a071d0979b435b4cd75a92f}{\+\_\+history}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classLinkedHashSet_a233e2ad20a071d0979b435b4cd75a92f}{\+\_\+history}} is a main storage of objects. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classLinkedHashSet_ab0eb3d3ce0783d9c623a744d42e6d0f0}\label{classLinkedHashSet_ab0eb3d3ce0783d9c623a744d42e6d0f0}} 
+static const size\+\_\+t \mbox{\hyperlink{classLinkedHashSet_ab0eb3d3ce0783d9c623a744d42e6d0f0}{DEFAULT\+\_\+\+CAPACITY}} = 8
+\begin{DoxyCompactList}\small\item\em Default (size of \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}}/number of buckets) on initialization. \end{DoxyCompactList}\item 
+constexpr static const double \mbox{\hyperlink{classLinkedHashSet_aa2fdfd4691ae393452d26a443503b9c8}{CAPACITY\+\_\+\+COEFF}} = 0.\+85
+\begin{DoxyCompactList}\small\item\em Coefficient which uses by public \mbox{\hyperlink{classLinkedHashSet_a01f38bae6e15f5b775b5e4c42ba0666b}{insert()}} and \mbox{\hyperlink{classLinkedHashSet_ac5806711d58e64920d59bd6765b9e37b}{remove()}} for resizing \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classLinkedHashSet_a9cb79a8a08d2bbc85460c1678710842f}\label{classLinkedHashSet_a9cb79a8a08d2bbc85460c1678710842f}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!LinkedHashSet@{LinkedHashSet}}
+\index{LinkedHashSet@{LinkedHashSet}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{LinkedHashSet()}{LinkedHashSet()}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher $>$ \\
+\mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::\mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}} (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$ \&}]{other }\end{DoxyParamCaption})}
+
+
+
+Initializes the hashset with same elements and same inserted order with {\ttfamily other}. 
+
+Doesn\textquotesingle{}t depend on {\ttfamily other} by everything
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & hashset to be copied to independent object. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classLinkedHashSet_a24e93aa87389b19e8acf74820b8376cf}\label{classLinkedHashSet_a24e93aa87389b19e8acf74820b8376cf}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!\_deleteArr@{\_deleteArr}}
+\index{\_deleteArr@{\_deleteArr}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{\_deleteArr()}{\_deleteArr()}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher $>$ \\
+void \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::\+\_\+delete\+Arr\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+Deletes all buckets and \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}} using {\bfseries{delete}} and {\bfseries{delete\mbox{[}\mbox{]}}} respectively. 
+
+Doesn\textquotesingle{}t change \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}} to nullptr. \mbox{\Hypertarget{classLinkedHashSet_a12a756064d59792af0697c3bd66af9a9}\label{classLinkedHashSet_a12a756064d59792af0697c3bd66af9a9}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!\_findInList@{\_findInList}}
+\index{\_findInList@{\_findInList}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{\_findInList()}{\_findInList()}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher $>$ \\
+std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$\+::iterator \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::\+\_\+find\+In\+List (\begin{DoxyParamCaption}\item[{std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$ $\ast$}]{list,  }\item[{const T \&}]{e }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\begin{DoxyReturn}{Returns}
+an iterator of the bucket pointing to the \mbox{\hyperlink{classLinkedHashSet_a233e2ad20a071d0979b435b4cd75a92f}{\+\_\+history}} iterator to {\ttfamily e}.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em list} & {\ttfamily list} where will be searched \mbox{\hyperlink{classLinkedHashSet_a233e2ad20a071d0979b435b4cd75a92f}{\+\_\+history}} iterator to {\ttfamily e}. \\
+\hline
+{\em e} & Search object with type T. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classLinkedHashSet_a3087455cae0019aaa80af1dc13c4c76f}\label{classLinkedHashSet_a3087455cae0019aaa80af1dc13c4c76f}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!\_getBucketIdx@{\_getBucketIdx}}
+\index{\_getBucketIdx@{\_getBucketIdx}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{\_getBucketIdx()}{\_getBucketIdx()}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher $>$ \\
+size\+\_\+t \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::\+\_\+get\+Bucket\+Idx (\begin{DoxyParamCaption}\item[{const T \&}]{e,  }\item[{size\+\_\+t}]{capacity }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\begin{DoxyReturn}{Returns}
+an index of bucket in \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}}, which contains \mbox{\hyperlink{classLinkedHashSet_a233e2ad20a071d0979b435b4cd75a92f}{\+\_\+history}} iterator to {\ttfamily e} object.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The object whose index is to be obtained. It will be hashed with std\+::hash(). \\
+\hline
+{\em capacity} & Hash division module. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classLinkedHashSet_a82f259201d7aaffcad5b6104da858577}\label{classLinkedHashSet_a82f259201d7aaffcad5b6104da858577}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!\_getList@{\_getList}}
+\index{\_getList@{\_getList}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{\_getList()}{\_getList()}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher $>$ \\
+std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$ \& \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::\+\_\+get\+List (\begin{DoxyParamCaption}\item[{std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$ $\ast$$\ast$}]{buckets\+Arr,  }\item[{size\+\_\+t}]{pos }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\begin{DoxyReturn}{Returns}
+a bucket from {\ttfamily buckets\+Arr} with position {\ttfamily pos}.
+\end{DoxyReturn}
+If the bucket at index {\ttfamily pos} is nullptr, it will be initialized and placed in {\ttfamily buckets\+Arr} at {\ttfamily pos}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em buckets\+Arr} & Bucket array. Must be initialized. \\
+\hline
+{\em pos} & Bucket index. Must be in \mbox{[}0, \mbox{\hyperlink{classLinkedHashSet_afcaadb26d32ed644766652a30702d06e}{\+\_\+arr\+Capacity}}\mbox{]}. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classLinkedHashSet_aa4c95d54aace62088d01a51e4b6a1d56}\label{classLinkedHashSet_aa4c95d54aace62088d01a51e4b6a1d56}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!\_insert@{\_insert}}
+\index{\_insert@{\_insert}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{\_insert()}{\_insert()}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher $>$ \\
+void \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::\+\_\+insert (\begin{DoxyParamCaption}\item[{std\+::list$<$ typename std\+::list$<$ T $>$\+::iterator $>$ $\ast$$\ast$}]{buckets\+Arr,  }\item[{typename std\+::list$<$ T $>$\+::iterator \&}]{it,  }\item[{size\+\_\+t}]{capacity }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Puts T object from $\ast$(it) in the bucket from {\ttfamily buckets\+Arr} filling an iterator {\ttfamily it}. 
+
+Allocates a bucket in the {\ttfamily buckets\+Arr} if needed.
+
+
+\begin{DoxyParams}{Parameters}
+{\em buckets\+Arr} & Bucket array. Must be initialized. \\
+\hline
+{\em it} & An iterator pointing to the object being placed. \\
+\hline
+{\em capacity} & {\ttfamily buckets\+Arr} size. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classLinkedHashSet_a007a24bfca04321427d0cb650cc02a16}\label{classLinkedHashSet_a007a24bfca04321427d0cb650cc02a16}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!\_resize@{\_resize}}
+\index{\_resize@{\_resize}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{\_resize()}{\_resize()}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher $>$ \\
+void \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::\+\_\+resize (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{new\+Capacity }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Replaces \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}} with a container of the same type with size {\ttfamily new\+Capacity}. 
+
+Uses {\bfseries{delete\mbox{[}\mbox{]}}} for previous \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}}. Overwrites \mbox{\hyperlink{classLinkedHashSet_afcaadb26d32ed644766652a30702d06e}{\+\_\+arr\+Capacity}} with {\ttfamily new\+Capacity}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Capacity} & New \mbox{\hyperlink{classLinkedHashSet_afcaadb26d32ed644766652a30702d06e}{\+\_\+arr\+Capacity}} for \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}}, which is needed after \mbox{\hyperlink{classLinkedHashSet_a007a24bfca04321427d0cb650cc02a16}{\+\_\+resize()}}. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classLinkedHashSet_a01f38bae6e15f5b775b5e4c42ba0666b}\label{classLinkedHashSet_a01f38bae6e15f5b775b5e4c42ba0666b}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!insert@{insert}}
+\index{insert@{insert}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{insert()}{insert()}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher $>$ \\
+bool \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::insert (\begin{DoxyParamCaption}\item[{const T \&}]{e }\end{DoxyParamCaption})}
+
+
+
+Inserts an element into hashset. 
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if hashset doesn\textquotesingle{}t contain the element. 
+
+{\ttfamily false} otherwise.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em e} & element to be inserted to hashset. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classLinkedHashSet_a8f44692a9a5e35eee55c7ab5f00883c4}\label{classLinkedHashSet_a8f44692a9a5e35eee55c7ab5f00883c4}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!operator==@{operator==}}
+\index{operator==@{operator==}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{operator==()}{operator==()}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher $>$ \\
+bool \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::operator== (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$ \&}]{other }\end{DoxyParamCaption})}
+
+
+
+Classical in understanding the equivalence relation between hashsets. 
+
+Doesn\textquotesingle{}t depend on the order of elements.
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if hashsets contain same elements. 
+
+{\ttfamily false} otherwise.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em other} & hashset to be compared to $\ast$this. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classLinkedHashSet_ac5806711d58e64920d59bd6765b9e37b}\label{classLinkedHashSet_ac5806711d58e64920d59bd6765b9e37b}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!remove@{remove}}
+\index{remove@{remove}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{remove()}{remove()}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher $>$ \\
+bool \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::remove (\begin{DoxyParamCaption}\item[{const T \&}]{e }\end{DoxyParamCaption})}
+
+
+
+Remove element from hashset. 
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if hashset contains the element. 
+
+{\ttfamily false} otherwise.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em e} & element to be removed from hashset. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}\label{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!\_buckets@{\_buckets}}
+\index{\_buckets@{\_buckets}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{\_buckets}{\_buckets}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher  = std\+::hash$<$\+T$>$$>$ \\
+std\+::list$<$typename std\+::list$<$T$>$\+::iterator$>$$\ast$$\ast$ \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::\+\_\+buckets\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Container of buckets lists. 
+
+\mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}} buckets contain an \mbox{\hyperlink{classLinkedHashSet_a233e2ad20a071d0979b435b4cd75a92f}{\+\_\+history}} iterator to the object for O(1) fast access. bucket \+:= \mbox{\hyperlink{classLinkedHashSet_a233e2ad20a071d0979b435b4cd75a92f}{\+\_\+history}} iterator list \mbox{\Hypertarget{classLinkedHashSet_aa2fdfd4691ae393452d26a443503b9c8}\label{classLinkedHashSet_aa2fdfd4691ae393452d26a443503b9c8}} 
+\index{LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}!CAPACITY\_COEFF@{CAPACITY\_COEFF}}
+\index{CAPACITY\_COEFF@{CAPACITY\_COEFF}!LinkedHashSet$<$ T, Hasher $>$@{LinkedHashSet$<$ T, Hasher $>$}}
+\doxysubsubsection{\texorpdfstring{CAPACITY\_COEFF}{CAPACITY\_COEFF}}
+{\footnotesize\ttfamily template$<$typename T , typename Hasher  = std\+::hash$<$\+T$>$$>$ \\
+constexpr static const double \mbox{\hyperlink{classLinkedHashSet}{Linked\+Hash\+Set}}$<$ T, Hasher $>$\+::CAPACITY\+\_\+\+COEFF = 0.\+85\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}, {\ttfamily [private]}}
+
+
+
+Coefficient which uses by public \mbox{\hyperlink{classLinkedHashSet_a01f38bae6e15f5b775b5e4c42ba0666b}{insert()}} and \mbox{\hyperlink{classLinkedHashSet_ac5806711d58e64920d59bd6765b9e37b}{remove()}} for resizing \mbox{\hyperlink{classLinkedHashSet_a9f19042673d6d131f479d4ee77f93cc1}{\+\_\+buckets}}. 
+
+Describes ratio of elements to \mbox{\hyperlink{classLinkedHashSet_afcaadb26d32ed644766652a30702d06e}{\+\_\+arr\+Capacity}}. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/user/\+CLion\+Projects/snd\+\_\+course\+\_\+task\+\_\+1/src/Linked\+Hash\+Set.\+h\item 
+/home/user/\+CLion\+Projects/snd\+\_\+course\+\_\+task\+\_\+1/src/Linked\+Hash\+Set.\+hpp\end{DoxyCompactItemize}

@@ -48,7 +48,7 @@ public:
     /*! @brief   Restore hashset to original form (including size and capacity). */
     LinkedHashSet &clear();
 
-    LinkedHashSet &operator=(LinkedHashSet other);
+    LinkedHashSet &operator=(const LinkedHashSet &other);
 
     /*! @brief   Classical in understanding the equivalence relation between hashsets.
      *  @details Doesn't depend on the order of elements.

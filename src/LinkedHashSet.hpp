@@ -24,11 +24,12 @@ LinkedHashSet<T, Hasher>::LinkedHashSet(const LinkedHashSet &other) : _arrCapaci
 }
 
 template<typename T, typename Hasher>
-LinkedHashSet<T, Hasher> &LinkedHashSet<T, Hasher>::operator=(LinkedHashSet other) {
-    if (*this == other) {
+LinkedHashSet<T, Hasher> &LinkedHashSet<T, Hasher>::operator=(const LinkedHashSet &other) {
+    if (this == &other) {
         return *this;
     }
-    swap(other);
+    LinkedHashSet<T, Hasher> copy(other);
+    swap(copy);
     return *this;
 }
 
